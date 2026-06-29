@@ -1,0 +1,56 @@
+---
+import { footerColumns } from '../data/homepage';
+---
+<section class="link-columns section">
+  <div class="container">
+    <div class="link-columns__grid reveal">
+      {Object.values(footerColumns).map((column) => (
+        <div class="link-columns__col">
+          <h4>{column.title}</h4>
+          <div class="link-columns__links">
+            {column.items.map((item) => (
+              <p><a href={item.href}>{item.title}</a></p>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .link-columns__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(2rem, 4vw, 3rem);
+  }
+
+  .link-columns__col h4 {
+    text-align: center;
+    margin-bottom: 1.25rem;
+    font-size: 1.125rem;
+  }
+
+  .link-columns__links p {
+    margin: 0;
+    text-align: center;
+    line-height: 2;
+  }
+
+  .link-columns__links a {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-text);
+    transition: color var(--transition);
+  }
+
+  .link-columns__links a:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 767px) {
+    .link-columns__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

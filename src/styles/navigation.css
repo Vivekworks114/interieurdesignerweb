@@ -1,0 +1,214 @@
+#site-nav .nav__list {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+#site-nav .nav__item {
+  position: relative;
+}
+
+#site-nav .nav__row {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+#site-nav .nav-link {
+  font-family: var(--font-nav);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  padding: 0.5rem 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: color var(--transition);
+  white-space: nowrap;
+}
+
+#site-nav .nav-link:hover,
+#site-nav .nav-link--active {
+  color: var(--color-accent);
+}
+
+#site-nav .nav-link__arrow {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+  transition: transform var(--transition);
+}
+
+#site-nav .nav-item--has-children:hover .nav-link__arrow,
+#site-nav .nav-item--expanded .nav-link__arrow {
+  transform: rotate(180deg);
+}
+
+#site-nav .nav__expand {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+#site-nav .nav__submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 240px;
+  background: var(--color-secondary);
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 0;
+  margin: 0;
+  list-style: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity var(--transition), transform var(--transition), visibility var(--transition);
+  z-index: 100;
+  box-shadow: var(--shadow-md);
+  border-radius: var(--card-radius);
+}
+
+#site-nav .nav-item--has-children:hover .nav__submenu,
+#site-nav .nav-item--has-children:focus-within .nav__submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+#site-nav .nav__submenu-overview {
+  display: none;
+}
+
+#site-nav .nav__sublink {
+  display: block;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--color-text);
+  transition: background var(--transition), color var(--transition);
+}
+
+#site-nav .nav__sublink:hover {
+  background: var(--color-bg-soft);
+  color: var(--color-accent);
+}
+
+@media (max-width: 1024px) {
+  #site-nav {
+    position: fixed;
+    top: 57px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-bg);
+    padding: 0.75rem 1.25rem 2rem;
+    transform: translateX(100%);
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.3s ease, visibility 0.3s;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    z-index: 999;
+  }
+
+  #site-nav.site-nav--open {
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  #site-nav .nav__list {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  #site-nav .nav__row {
+    justify-content: space-between;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  #site-nav .nav-link {
+    flex: 1;
+    padding: 1rem 0;
+    font-size: 1.0625rem;
+    white-space: normal;
+  }
+
+  #site-nav .nav-link__arrow {
+    display: none;
+  }
+
+  #site-nav .nav__expand {
+    display: flex;
+  }
+
+  #site-nav .nav__submenu {
+    position: static;
+    opacity: 1;
+    visibility: hidden;
+    max-height: 0;
+    overflow: hidden;
+    transform: none;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    padding: 0;
+    min-width: 0;
+    transition: max-height 0.35s ease, visibility 0.2s;
+  }
+
+  #site-nav .nav-item--expanded .nav__submenu {
+    visibility: visible;
+    max-height: 600px;
+    padding-bottom: 0.75rem;
+  }
+
+  #site-nav .nav__submenu-overview {
+    display: block;
+  }
+
+  #site-nav .nav__sublink {
+    padding: 0.625rem 0 0.625rem 1rem;
+    font-size: 0.9375rem;
+  }
+
+  #site-nav .nav__sublink--overview {
+    font-weight: 500;
+    padding-left: 0;
+  }
+}
+
+#nav-backdrop {
+  display: none;
+  position: fixed;
+  top: 57px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 15, 15, 0.4);
+  z-index: 998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+#nav-backdrop.nav-backdrop--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 1024px) {
+  #nav-backdrop {
+    display: block;
+  }
+}

@@ -1,0 +1,64 @@
+---
+import type { NavItem } from '../data/navigation';
+
+interface Props {
+  items: NavItem[];
+  currentPath: string;
+}
+
+const { items, currentPath } = Astro.props;
+
+function isActive(href: string) {
+  if (href === '/') return currentPath === '/' || currentPath === '';
+  return currentPath.startsWith(href);
+}
+
+const arrowIcon = `<svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+---
+<nav class="nav" id="site-nav" aria-label="Menu">
+  <ul class="nav__list">
+    {items.map((item) => (
+      <li class:list={['nav__item', item.children && 'nav-item--has-children']}>
+        <div class="nav__row">
+          <a
+            href={item.href}
+            class:list={['nav-link', isActive(item.href) && 'nav-link--active']}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            {...(item.children ? { 'aria-haspopup': 'true' } : {})}
+          >
+            {item.label}
+            {item.children && (
+              <span class="nav-link__arrow" set:html={arrowIcon} />
+            )}
+          </a>
+          {item.children && (
+            <button
+              type="button"
+              class="nav__expand"
+              aria-label={`${item.label} submenu openen`}
+              aria-expanded="false"
+            >
+              <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+                <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          )}
+        </div>
+        {item.children && (
+          <ul class="nav__submenu">
+            <li class="nav__submenu-overview">
+              <a href={item.href} class="nav__sublink nav__sublink--overview">
+                Alle {item.label.toLowerCase()} &rarr;
+              </a>
+            </li>
+            {item.children.map((child) => (
+              <li>
+                <a href={child.href} class="nav__sublink">{child.label}</a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </li>
+    ))}
+  </ul>
+</nav>

@@ -1,0 +1,17 @@
+---
+import { popularProducts } from '../data/homepage';
+---
+<section class="product-grid section section--soft">
+  <div class="container">
+    <div class="section-title reveal">
+      <h2>Populaire producten</h2>
+    </div>
+    <div class="link-grid link-grid--3 reveal">
+      {popularProducts.map((item) => (
+        <div class="link-grid__item">
+          <a href={item.href}>{item.title}</a>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

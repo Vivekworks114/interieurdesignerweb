@@ -1,0 +1,18 @@
+{
+  "name": "interieurdesignerweb.nl",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "verify:links": "python3 scripts/verify-links.py"
+  },
+  "dependencies": {
+    "astro": "^7.0.3"
+  }
+}

@@ -1,0 +1,73 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title,
+  description = 'Wil je je huis goed inrichten? Wij helpen je met de beste producten en handige tips om dit te kunnen doen!',
+  image,
+} = Astro.props;
+
+const fullTitle =
+  title === 'Home'
+    ? 'Een mooi interieur voor je huis | Interieurdesignerweb.nl'
+    : `${title} | Interieurdesignerweb.nl`;
+---
+<!doctype html>
+<html lang="nl-NL">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/png" href="/images/2023/02/cropped-Group-78-32x32.png" />
+    <link rel="apple-touch-icon" href="/images/2023/02/cropped-Group-78-180x180.png" />
+    {image && <meta property="og:image" content={image} />}
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    <a href="#content" class="skip-link">Ga naar de inhoud</a>
+    <slot name="header" />
+    <main id="content">
+      <slot />
+    </main>
+    <slot name="footer" />
+    <script>
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+            }
+          });
+        },
+        { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+      );
+
+      document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+  @import '../styles/navigation.css';
+  @import '../styles/footer.css';
+
+  body.nav-open {
+    overflow: hidden;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>

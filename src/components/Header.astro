@@ -1,0 +1,219 @@
+---
+import { mainNavigation } from '../data/navigation';
+import Navigation from './Navigation.astro';
+
+const currentPath = Astro.url.pathname;
+---
+<header class="header">
+  <div class="header__inner container">
+    <a href="/" class="header__logo" aria-label="Interieurdesignerweb.nl - Home">
+      <img src="/images/2023/02/Frame-700-1.svg" alt="Interieurdesignerweb.nl" width="354" height="30" />
+    </a>
+
+    <div class="header__nav">
+      <Navigation items={mainNavigation} currentPath={currentPath} />
+    </div>
+
+    <button
+      class="nav-toggle"
+      type="button"
+      id="nav-toggle"
+      aria-label="Menu openen"
+      aria-expanded="false"
+      aria-controls="site-nav"
+    >
+      <span class="nav-toggle__bar"></span>
+      <span class="nav-toggle__bar"></span>
+      <span class="nav-toggle__bar"></span>
+    </button>
+  </div>
+
+  <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
+</header>
+
+<script is:inline>
+  (function () {
+    var MOBILE = 1024;
+
+    function isMobile() {
+      return window.innerWidth <= MOBILE;
+    }
+
+    function closeNav() {
+      var nav = document.getElementById('site-nav');
+      var toggle = document.getElementById('nav-toggle');
+      var backdrop = document.getElementById('nav-backdrop');
+      if (nav) nav.classList.remove('site-nav--open');
+      if (nav && isMobile()) nav.setAttribute('aria-hidden', 'true');
+      if (toggle) {
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Menu openen');
+      }
+      if (backdrop) {
+        backdrop.classList.remove('nav-backdrop--visible');
+        backdrop.setAttribute('aria-hidden', 'true');
+      }
+      document.body.classList.remove('nav-open');
+    }
+
+    function openNav() {
+      var nav = document.getElementById('site-nav');
+      var toggle = document.getElementById('nav-toggle');
+      var backdrop = document.getElementById('nav-backdrop');
+      if (nav) {
+        nav.classList.add('site-nav--open');
+        nav.setAttribute('aria-hidden', 'false');
+      }
+      if (toggle) {
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-label', 'Menu sluiten');
+      }
+      if (backdrop) {
+        backdrop.classList.add('nav-backdrop--visible');
+        backdrop.setAttribute('aria-hidden', 'false');
+      }
+      document.body.classList.add('nav-open');
+    }
+
+    function init() {
+      var nav = document.getElementById('site-nav');
+      var toggle = document.getElementById('nav-toggle');
+      var backdrop = document.getElementById('nav-backdrop');
+      if (!nav || !toggle) return;
+
+      if (isMobile()) nav.setAttribute('aria-hidden', 'true');
+
+      toggle.addEventListener('click', function () {
+        if (toggle.getAttribute('aria-expanded') === 'true') closeNav();
+        else openNav();
+      });
+
+      if (backdrop) backdrop.addEventListener('click', closeNav);
+
+      nav.querySelectorAll('.nav__expand').forEach(function (button) {
+        button.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!isMobile()) return;
+          var item = button.closest('.nav-item--has-children');
+          var expanded = button.getAttribute('aria-expanded') === 'true';
+          nav.querySelectorAll('.nav-item--has-children').forEach(function (other) {
+            if (other !== item) {
+              other.classList.remove('nav-item--expanded');
+              var btn = other.querySelector('.nav__expand');
+              if (btn) btn.setAttribute('aria-expanded', 'false');
+            }
+          });
+          if (item) item.classList.toggle('nav-item--expanded', !expanded);
+          button.setAttribute('aria-expanded', String(!expanded));
+        });
+      });
+
+      nav.querySelectorAll('a.nav-link, a.nav__sublink').forEach(function (link) {
+        link.addEventListener('click', function () {
+          if (isMobile()) closeNav();
+        });
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeNav();
+      });
+
+      window.addEventListener('resize', function () {
+        if (!isMobile()) {
+          closeNav();
+          nav.querySelectorAll('.nav-item--has-children').forEach(function (item) {
+            item.classList.remove('nav-item--expanded');
+            var btn = item.querySelector('.nav__expand');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+          });
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1rem;
+    min-height: 57px;
+  }
+
+  .header__logo img {
+    width: clamp(180px, 28vw, 320px);
+    height: auto;
+    transition: opacity var(--transition);
+  }
+
+  .header__logo:hover img {
+    opacity: 0.8;
+  }
+
+  .header__nav {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+    flex-shrink: 0;
+  }
+
+  .nav-toggle__bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--color-primary);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform-origin: center;
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bar:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+
+  .nav-toggle[aria-expanded='true'] .nav-toggle__bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  @media (max-width: 1024px) {
+    .nav-toggle {
+      display: flex;
+    }
+  }
+</style>

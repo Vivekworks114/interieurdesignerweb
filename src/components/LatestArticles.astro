@@ -1,0 +1,38 @@
+---
+import ArticleCard from './ArticleCard.astro';
+import blogPosts from '../data/blog-posts.json';
+
+const latestPosts = blogPosts.slice(0, 6);
+---
+<section class="articles section section--soft">
+  <div class="container">
+    <div class="section-title reveal">
+      <h2>Laatste artikelen</h2>
+    </div>
+    <div class="articles__grid reveal">
+      {latestPosts.map((post) => (
+        <ArticleCard title={post.title} href={post.href} image={post.image} />
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .articles__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  @media (max-width: 1023px) {
+    .articles__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 599px) {
+    .articles__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

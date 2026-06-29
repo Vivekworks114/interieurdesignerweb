@@ -1,0 +1,52 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import blogPosts from '../../data/blog-posts.json';
+---
+<PageLayout
+  title="Blog"
+  description="Handige tips en informatie voor je interieur. Bekijk onze nieuwste artikelen over woninginrichting, meubels en interieurproducten."
+>
+  <header class="page-header reveal">
+    <p class="page-header__label">Blog</p>
+    <h1>Laatste artikelen</h1>
+    <p>
+      Op ons blog vind je nuttige artikelen over woninginrichting, meubels en interieurproducten.
+      Laat je inspireren en maak het inrichten van je woning een stuk makkelijker.
+    </p>
+  </header>
+  <div class="blog-grid">
+    {blogPosts.map((post) => (
+      <BlogCard title={post.title} href={post.href} image={post.image} />
+    ))}
+  </div>
+</PageLayout>
+
+<style>
+  .page-header {
+    max-width: 52rem;
+    margin-bottom: 3rem;
+  }
+
+  .page-header__label {
+    font-family: var(--font-nav);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  @media (max-width: 767px) {
+    .blog-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,160 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import blogPosts from '../data/blog-posts.json';
+import products from '../data/products.json';
+import { getCategoryBySlug, getCategoryItems } from '../data/categories';
+
+export async function getStaticPaths() {
+  const blogPaths = blogPosts.map((post) => ({
+    params: { slug: post.slug },
+    props: { type: 'blog' as const, data: post },
+  }));
+
+  const productPaths = products.map((product) => ({
+    params: { slug: product.slug },
+    props: { type: 'product' as const, data: product },
+  }));
+
+  const categorySlugs = [
+    'bedden-en-beddengoed', 'elektronica', 'meubelen', 'verkoeling-en-verwarming',
+    'woonaccessoires', 'wasmachines-en-accessoires', 'veiligheid',
+  ];
+
+  const categoryPaths = categorySlugs.map((slug) => ({
+    params: { slug },
+    props: { type: 'category' as const, slug },
+  }));
+
+  return [...blogPaths, ...productPaths, ...categoryPaths];
+}
+
+const props = Astro.props;
+
+function slugToTitle(s: string) {
+  return s
+    .replace(/^beste-/, '')
+    .split('-')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
+
+const category = props.type === 'category' ? getCategoryBySlug(props.slug) : null;
+const categoryItems = props.type === 'category' ? getCategoryItems(props.slug) : [];
+const categoryTitle = category?.title ?? (props.type === 'category' ? slugToTitle(props.slug) : '');
+const categoryDescription =
+  category?.description ??
+  (props.type === 'category' ? `Bekijk ons aanbod ${categoryTitle.toLowerCase()} op Interieurdesignerweb.nl` : '');
+---
+{props.type === 'blog' && props.data && (
+  <PageLayout title={props.data.title} description={`Lees ${props.data.title} op Interieurdesignerweb.nl`} image={props.data.image}>
+    <article class="blog-post reveal">
+      <div class="blog-post__hero">
+        <img src={props.data.image} alt={props.data.title} width="800" height="533" />
+      </div>
+      <h1>{props.data.title}</h1>
+      <div class="prose">
+        <p>
+          Welkom op Interieurdesignerweb.nl. In dit artikel delen we onze tips en ervaringen over
+          {` ${props.data.title.toLowerCase()}.`} Bekijk regelmatig ons blog voor de nieuwste
+          interieurtips en productvergelijkingen.
+        </p>
+        <p>
+          Wil je meer inspiratie voor je interieur? Bekijk ook onze
+          <a href="/blog/">andere blogartikelen</a> of ontdek onze
+          <a href="/meubelen/">populaire producten</a>.
+        </p>
+      </div>
+    </article>
+  </PageLayout>
+)}
+
+{props.type === 'product' && props.data && (
+  <PageLayout
+    title={props.data.title}
+    description={`${props.data.title} - Vergelijk en vind de beste optie op Interieurdesignerweb.nl`}
+    image={props.data.image}
+  >
+    <article class="product-page reveal">
+      <div class="product-page__hero">
+        <img src={props.data.image} alt={props.data.title} width="800" height="533" />
+      </div>
+      <h1>{props.data.title}</h1>
+      <div class="prose">
+        <p>
+          Op Interieurdesignerweb.nl helpen we je bij het vinden van de beste {slugToTitle(props.data.slug).toLowerCase()}.
+          Wij vergelijken verschillende producten en geven je eerlijk advies zodat je de juiste keuze kunt maken.
+        </p>
+        <p>
+          Ben je op zoek naar meer interieurproducten? Bekijk onze categorieën of lees onze
+          <a href="/blog/">handige tips</a> op het blog.
+        </p>
+      </div>
+    </article>
+  </PageLayout>
+)}
+
+{props.type === 'category' && (
+  <PageLayout title={categoryTitle} description={categoryDescription}>
+    <article class="category-page reveal">
+      <h1>{categoryTitle}</h1>
+      <p>{categoryDescription}</p>
+      <div class="category-page__links">
+        {categoryItems.map((item) => (
+          <p><a href={item.href}>{item.label}</a></p>
+        ))}
+      </div>
+    </article>
+  </PageLayout>
+)}
+
+<style>
+  .blog-post__hero,
+  .product-page__hero {
+    aspect-ratio: 3 / 2;
+    max-width: 48rem;
+    margin-bottom: 2rem;
+    border-radius: var(--card-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+
+  .blog-post__hero img,
+  .product-page__hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .blog-post h1,
+  .product-page h1,
+  .category-page h1 {
+    margin-bottom: 1.25rem;
+  }
+
+  .category-page__links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem 2rem;
+    margin-top: 2rem;
+  }
+
+  .category-page__links p {
+    margin: 0;
+    line-height: 2;
+  }
+
+  .category-page__links a {
+    color: var(--color-text);
+    transition: color var(--transition);
+  }
+
+  .category-page__links a:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 599px) {
+    .category-page__links {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

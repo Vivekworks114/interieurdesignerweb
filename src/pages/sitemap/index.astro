@@ -1,0 +1,55 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import { mainNavigation } from '../../data/navigation';
+import blogPosts from '../../data/blog-posts.json';
+import products from '../../data/products.json';
+
+const allLinks = [
+  ...mainNavigation.map((n) => ({ label: n.label, href: n.href })),
+  ...mainNavigation.flatMap((n) => n.children ?? []),
+  ...blogPosts.map((p) => ({ label: p.title, href: p.href })),
+  ...products.map((p) => ({ label: p.title, href: p.href })),
+];
+---
+<PageLayout title="Sitemap" description="Overzicht van alle pagina's op Interieurdesignerweb.nl">
+  <article class="sitemap reveal">
+    <h1>Sitemap</h1>
+    <div class="sitemap__grid">
+      {allLinks.map((link) => (
+        <p><a href={link.href}>{link.label}</a></p>
+      ))}
+    </div>
+  </article>
+</PageLayout>
+
+<style>
+  .sitemap h1 {
+    margin-bottom: 2rem;
+  }
+
+  .sitemap__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem 2rem;
+  }
+
+  .sitemap__grid p {
+    margin: 0;
+    line-height: 2;
+  }
+
+  .sitemap__grid a {
+    color: var(--color-text);
+    transition: color var(--transition);
+  }
+
+  .sitemap__grid a:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 767px) {
+    .sitemap__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

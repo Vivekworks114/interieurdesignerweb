@@ -1,0 +1,53 @@
+---
+import { footerInfoLinks, footerTagline } from '../data/footer';
+import { mainNavigation } from '../data/navigation';
+import blogPosts from '../data/blog-posts.json';
+
+const latestPosts = blogPosts.slice(0, 6);
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="site-footer__top container">
+    <a href="/" class="site-footer__top-logo" aria-label="Interieurdesignerweb.nl Home">
+      <img src="/images/2023/02/Frame-700-1.svg" alt="Interieurdesignerweb.nl" width="280" height="24" />
+    </a>
+    <p class="site-footer__tagline">{footerTagline}</p>
+  </div>
+
+  <div class="site-footer__divider container" aria-hidden="true"></div>
+
+  <div class="site-footer__grid container">
+    <div class="site-footer__column reveal">
+      <p class="site-footer__heading">Navigatie</p>
+      <div class="site-footer__links">
+        {footerInfoLinks.map((link) => (
+          <p><a href={link.href}>{link.label}</a></p>
+        ))}
+      </div>
+    </div>
+
+    <div class="site-footer__column reveal">
+      <p class="site-footer__heading">Laatste artikelen</p>
+      <div class="site-footer__links">
+        {latestPosts.map((post) => (
+          <p><a href={post.href}>{post.title}</a></p>
+        ))}
+      </div>
+    </div>
+
+    {mainNavigation.filter((item) => item.children).map((item) => (
+      <div class="site-footer__column reveal">
+        <p class="site-footer__heading">{item.label}</p>
+        <div class="site-footer__links">
+          {item.children!.slice(0, 6).map((child) => (
+            <p><a href={child.href}>{child.label}</a></p>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="site-footer__divider container" aria-hidden="true"></div>
+
+  <p class="site-footer__copyright container">&copy; {year} All rights reserved</p>
+</footer>
