@@ -1,0 +1,76 @@
+---
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import '../styles/theme.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath?: string;
+  ogImage?: string;
+  ogType?: string;
+}
+
+const {
+  title,
+  description,
+  canonicalPath = '/',
+  ogImage = '/wp-content/uploads/2024/05/stolmeijer-vijfhuizen-01-web.webp',
+  ogType = 'website',
+} = Astro.props;
+
+const siteUrl = 'https://interieurdesignerweb.nl';
+const canonical =
+  canonicalPath === '/'
+    ? `${siteUrl}/`
+    : `${siteUrl}${canonicalPath.endsWith('/') ? canonicalPath : `${canonicalPath}/`}`;
+const absoluteOg = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+const currentPath = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="nl-NL">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:locale" content="nl_NL" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="interieurdesignerweb.nl" />
+    <meta property="og:image" content={absoluteOg} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/wp-content/uploads/2023/02/cropped-Group-78-32x32.png" sizes="32x32" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip" href="#main">Ga naar de inhoud</a>
+    <SiteHeader currentPath={currentPath} />
+    <main id="main">
+      <slot />
+    </main>
+    <SiteFooter />
+    <script>
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-in');
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+      );
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

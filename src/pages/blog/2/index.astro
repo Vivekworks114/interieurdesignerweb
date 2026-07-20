@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+
+const title = 'Blog | Interieurdesignerweb.nl';
+const description =
+  'Handige tips en informatie voor je interieur. Bekijk onze nieuwste artikelen over woninginrichting, meubels en interieurproducten.';
+
+const ordered = (await getCollection('blog'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const pageSize = 30;
+const posts = ordered.slice(pageSize);
+---
+<SiteLayout title={title} description={description} canonicalPath="/blog/2/">
+  <div class="home-wrap">
+    <header class="page-hero reveal">
+      <p class="page-hero__label">Blog</p>
+      <h1>Meer artikelen</h1>
+      <p>Pagina 2 van het blog — blijf lezen en ontdek meer interieurtips.</p>
+    </header>
+
+    <section class="page-section">
+      <div class="card-grid card-grid--3">
+        {posts.map((post) => (
+          <a class="theme-card reveal" href={`/${post.data.slug || post.id}/`}>
+            <div class="theme-card__media">
+              <img src={post.data.image} alt="" width="800" height="533" loading="lazy" />
+            </div>
+            <h2>{post.data.title}</h2>
+            <span class="theme-card__meta">
+              {post.data.pubDate.toLocaleDateString('nl-NL', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </span>
+            <span class="theme-card__cta">Lees verder →</span>
+          </a>
+        ))}
+      </div>
+
+      <nav class="pager reveal" aria-label="Paginering">
+        <a href="/blog/">← Vorige</a>
+        <a href="/blog/">1</a>
+        <span class="is-current">2</span>
+      </nav>
+    </section>
+  </div>
+</SiteLayout>

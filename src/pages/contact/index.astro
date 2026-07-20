@@ -1,10 +1,63 @@
 ---
-import PageLayout from '../../layouts/PageLayout.astro';
-import Contact from '../../components/Contact.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
 ---
-<PageLayout
-  title="Contact"
+<SiteLayout
+  title="Contact | Interieurdesignerweb.nl"
   description="Neem contact op met Interieurdesignerweb.nl voor vragen over interieurproducten en woninginrichting."
+  canonicalPath="/contact/"
 >
-  <Contact />
-</PageLayout>
+  <div class="home-wrap page-section">
+    <header class="page-hero reveal">
+      <p class="page-hero__label">Contact</p>
+      <h1>Laten we contact houden</h1>
+      <p>Heb je een vraag over een productgids of wil je samenwerken? Stuur ons een bericht.</p>
+    </header>
+
+    <form class="contact-form reveal" method="post" action="#">
+      <label>
+        Naam
+        <input type="text" name="name" required autocomplete="name" />
+      </label>
+      <label>
+        E-mail
+        <input type="email" name="email" required autocomplete="email" />
+      </label>
+      <label>
+        Bericht
+        <textarea name="message" rows="6" required></textarea>
+      </label>
+      <button class="btn btn--solid" type="submit">Verstuur bericht</button>
+    </form>
+  </div>
+</SiteLayout>
+
+<style>
+  .contact-form {
+    display: grid;
+    gap: 1.1rem;
+    max-width: 36rem;
+  }
+
+  .contact-form label {
+    display: grid;
+    gap: 0.4rem;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    border: 1px solid var(--home-line);
+    background: rgba(251, 252, 251, 0.85);
+    padding: 0.8rem 0.9rem;
+    font: inherit;
+    color: var(--home-ink);
+  }
+
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    outline: 2px solid rgba(36, 92, 69, 0.35);
+    outline-offset: 1px;
+  }
+</style>

@@ -1,0 +1,92 @@
+{
+  "slug": "home",
+  "title": "Een mooi interieur voor je huis | Interieurdesignerweb.nl",
+  "description": "Wil je je huis goed inrichten? Wij helpen je met de beste producten en handige tips om dit te kunnen doen!",
+  "canonical": "https://interieurdesignerweb.nl/",
+  "ogImage": "/wp-content/uploads/2023/02/Frame-700-1.svg",
+  "ogType": "website",
+  "bodyClass": "home wp-singular page-template-default page page-id-40 wp-embed-responsive wp-theme-hello-elementor hello-elementor-default elementor-default elementor-kit-7 elementor-page elementor-page-40",
+  "stylesheets": [
+    "/wp-assets/css/hello-reset.css",
+    "/wp-assets/css/hello-theme.css",
+    "/wp-assets/css/hello-header-footer.css",
+    "/wp-assets/css/el-frontend.min.css",
+    "/wp-assets/css/post-7.css",
+    "/wp-assets/css/el-widget-image.min.css",
+    "/wp-assets/css/pro-widget-nav-menu.min.css",
+    "/wp-assets/css/el-widget-heading.min.css",
+    "/wp-assets/css/pro-widget-posts.min.css",
+    "/wp-assets/css/eicons-elementor-icons.min.css",
+    "/wp-assets/css/post-40.css",
+    "/wp-assets/css/post-11.css",
+    "/wp-assets/css/post-9.css",
+    "/wp-assets/css/font-jost.css",
+    "/wp-assets/css/fa-fontawesome.min.css",
+    "/wp-assets/css/fa-solid.min.css",
+    "/wp-assets/css/homepage-inline.css"
+  ],
+  "jsonLd": [
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://interieurdesignerweb.nl/",
+          "url": "https://interieurdesignerweb.nl/",
+          "name": "Een mooi interieur voor je huis | Interieurdesignerweb.nl",
+          "isPartOf": {
+            "@id": "https://interieurdesignerweb.nl/#website"
+          },
+          "datePublished": "2023-02-20T11:47:31+00:00",
+          "dateModified": "2023-10-10T15:23:50+00:00",
+          "description": "Wil je je huis goed inrichten? Wij helpen je met de beste producten en handige tips om dit te kunnen doen!",
+          "breadcrumb": {
+            "@id": "https://interieurdesignerweb.nl/#breadcrumb"
+          },
+          "inLanguage": "nl-NL",
+          "potentialAction": [
+            {
+              "@type": "ReadAction",
+              "target": [
+                "https://interieurdesignerweb.nl/"
+              ]
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://interieurdesignerweb.nl/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home"
+            }
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://interieurdesignerweb.nl/#website",
+          "url": "https://interieurdesignerweb.nl/",
+          "name": "interieurdesignerweb.nl",
+          "description": "interieurdesignerweb.nl",
+          "potentialAction": [
+            {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://interieurdesignerweb.nl/?s={search_term_string}"
+              },
+              "query-input": {
+                "@type": "PropertyValueSpecification",
+                "valueRequired": true,
+                "valueName": "search_term_string"
+              }
+            }
+          ],
+          "inLanguage": "nl-NL"
+        }
+      ]
+    }
+  ]
+}

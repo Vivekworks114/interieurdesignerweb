@@ -1,0 +1,10 @@
+[
+  {
+    "slug": "page-1",
+    "path": "/blog/"
+  },
+  {
+    "slug": "page-2",
+    "path": "/blog/2/"
+  }
+]

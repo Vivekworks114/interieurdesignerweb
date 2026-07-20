@@ -1,0 +1,35 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import sitemapCategories from '../../../data/sitemap-categories.json';
+
+export function getStaticPaths() {
+  return Object.entries(sitemapCategories).map(([slug, data]) => ({
+    params: { slug },
+    props: { slug, data },
+  }));
+}
+
+const { slug, data } = Astro.props;
+const label = slug === 'blog' ? 'Blog' : 'Uncategorized';
+const title = `${label} | Interieurdesignerweb.nl`;
+const description = `Berichten in categorie ${label} op Interieurdesignerweb.nl`;
+---
+<SiteLayout title={title} description={description} canonicalPath={`/category/${slug}/`}>
+  <div class="home-wrap page-section">
+    <header class="page-hero reveal">
+      <p class="page-hero__label">Archief</p>
+      <h1>{label}</h1>
+      <p>Alle berichten in deze categorie.</p>
+    </header>
+    <ul class="link-list reveal">
+      {data.posts.map((post) => (
+        <li>
+          <a href={post.href}>
+            <span>{post.title}</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</SiteLayout>

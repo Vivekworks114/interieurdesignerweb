@@ -1,0 +1,136 @@
+{
+  "slug": "7-kenmerken-van-een-luxe-keuken-die-echt-het-verschil-maken",
+  "title": "7 Kenmerken van een luxe keuken die écht het verschil maken - interieurdesignerweb.nl",
+  "description": "Lees 7 Kenmerken van een luxe keuken die écht het verschil maken - interieurdesignerweb.nl op Interieurdesignerweb.nl",
+  "canonical": "https://interieurdesignerweb.nl/7-kenmerken-van-een-luxe-keuken-die-echt-het-verschil-maken/",
+  "ogImage": "/wp-content/uploads/2023/02/image-2.jpg",
+  "ogType": "article",
+  "bodyClass": "wp-singular post-template-default single single-post postid-847 single-format-standard wp-embed-responsive wp-theme-hello-elementor hello-elementor-default elementor-default elementor-kit-7 article-page",
+  "template": "classic",
+  "stylesheets": [
+    "/wp-assets/css/hello-reset.css",
+    "/wp-assets/css/hello-theme.css",
+    "/wp-assets/css/hello-header-footer.css",
+    "/wp-assets/css/el-frontend.min.css",
+    "/wp-assets/css/post-7.css",
+    "/wp-assets/css/el-widget-image.min.css",
+    "/wp-assets/css/pro-widget-nav-menu.min.css",
+    "/wp-assets/css/el-widget-heading.min.css",
+    "/wp-assets/css/pro-widget-posts.min.css",
+    "/wp-assets/css/eicons-elementor-icons.min.css",
+    "/wp-assets/css/post-11.css",
+    "/wp-assets/css/post-9.css",
+    "/wp-assets/css/font-jost.css",
+    "/wp-assets/css/fa-fontawesome.min.css",
+    "/wp-assets/css/fa-solid.min.css",
+    "/wp-assets/css/wp-block-library.min.css",
+    "/wp-assets/css/article-page.css"
+  ],
+  "jsonLd": [
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "@id": "https://interieurdesignerweb.nl/7-kenmerken-van-een-luxe-keuken-die-echt-het-verschil-maken/#article",
+          "isPartOf": {
+            "@id": "https://interieurdesignerweb.nl/7-kenmerken-van-een-luxe-keuken-die-echt-het-verschil-maken/"
+          },
+          "author": {
+            "name": "Alida",
+            "@id": "https://interieurdesignerweb.nl/#/schema/person/888cc50139019d7ce15c39e21aa96c43"
+          },
+          "headline": "7 Kenmerken van een luxe keuken die écht het verschil maken",
+          "datePublished": "2026-05-28T15:58:22+00:00",
+          "mainEntityOfPage": {
+            "@id": "https://interieurdesignerweb.nl/7-kenmerken-van-een-luxe-keuken-die-echt-het-verschil-maken/"
+          },
+          "wordCount": 854,
+          "articleSection": [
+            "Uncategorized"
+          ],
+          "inLanguage": "nl-NL"
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://interieurdesignerweb.nl/7-kenmerken-van-een-luxe-keuken-die-echt-het-verschil-maken/",
+          "url": "https://interieurdesignerweb.nl/7-kenmerken-van-een-luxe-keuken-die-echt-het-verschil-maken/",
+          "name": "7 Kenmerken van een luxe keuken die écht het verschil maken - interieurdesignerweb.nl",
+          "isPartOf": {
+            "@id": "https://interieurdesignerweb.nl/#website"
+          },
+          "datePublished": "2026-05-28T15:58:22+00:00",
+          "author": {
+            "@id": "https://interieurdesignerweb.nl/#/schema/person/888cc50139019d7ce15c39e21aa96c43"
+          },
+          "breadcrumb": {
+            "@id": "https://interieurdesignerweb.nl/7-kenmerken-van-een-luxe-keuken-die-echt-het-verschil-maken/#breadcrumb"
+          },
+          "inLanguage": "nl-NL",
+          "potentialAction": [
+            {
+              "@type": "ReadAction",
+              "target": [
+                "https://interieurdesignerweb.nl/7-kenmerken-van-een-luxe-keuken-die-echt-het-verschil-maken/"
+              ]
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://interieurdesignerweb.nl/7-kenmerken-van-een-luxe-keuken-die-echt-het-verschil-maken/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://interieurdesignerweb.nl/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "7 Kenmerken van een luxe keuken die écht het verschil maken"
+            }
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://interieurdesignerweb.nl/#website",
+          "url": "https://interieurdesignerweb.nl/",
+          "name": "interieurdesignerweb.nl",
+          "description": "interieurdesignerweb.nl",
+          "potentialAction": [
+            {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://interieurdesignerweb.nl/?s={search_term_string}"
+              },
+              "query-input": {
+                "@type": "PropertyValueSpecification",
+                "valueRequired": true,
+                "valueName": "search_term_string"
+              }
+            }
+          ],
+          "inLanguage": "nl-NL"
+        },
+        {
+          "@type": "Person",
+          "@id": "https://interieurdesignerweb.nl/#/schema/person/888cc50139019d7ce15c39e21aa96c43",
+          "name": "Alida",
+          "image": {
+            "@type": "ImageObject",
+            "inLanguage": "nl-NL",
+            "@id": "https://secure.gravatar.com/avatar/8f8eb56c48baa1d3f78e89a005b68b1038aca1aab6a892b4bb389347284561d6?s=96&d=mm&r=g",
+            "url": "https://secure.gravatar.com/avatar/8f8eb56c48baa1d3f78e89a005b68b1038aca1aab6a892b4bb389347284561d6?s=96&d=mm&r=g",
+            "contentUrl": "https://secure.gravatar.com/avatar/8f8eb56c48baa1d3f78e89a005b68b1038aca1aab6a892b4bb389347284561d6?s=96&d=mm&r=g",
+            "caption": "Alida"
+          },
+          "url": "https://interieurdesignerweb.nl/author/alida/"
+        }
+      ]
+    }
+  ],
+  "htmlFile": "elementor/articles/7-kenmerken-van-een-luxe-keuken-die-echt-het-verschil-maken.html"
+}

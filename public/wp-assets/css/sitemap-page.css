@@ -1,0 +1,90 @@
+
+/* Classic Hello Elementor page shell for /sitemap/ */
+body.page-id-124 main.site-main,
+.sitemap-page main.site-main {
+  max-width: 1140px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  box-sizing: border-box;
+  color: #333;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.sitemap-page .page-header {
+  margin: 0;
+}
+
+.sitemap-page h1.entry-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  font-size: 2.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #333;
+  margin: 0.5rem 0 1rem;
+}
+
+.sitemap-page .page-content {
+  margin: 0;
+  padding: 0 0 2rem;
+}
+
+.sitemap-page .wsp-container h2,
+.sitemap-page .wsp-pages-title,
+.sitemap-page .wsp-posts-title,
+.sitemap-page .wsp-category-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #333;
+  margin: 0.5rem 0 1rem;
+}
+
+.sitemap-page .wsp-pages-list,
+.sitemap-page .wsp-posts-list,
+.sitemap-page .wsp-categories-list,
+.sitemap-page .wsp-cat-posts-list {
+  list-style-type: disc;
+  margin: 0 0 1.5rem;
+  padding-left: 40px;
+}
+
+.sitemap-page .wsp-pages-list li,
+.sitemap-page .wsp-posts-list li,
+.sitemap-page .wsp-categories-list li,
+.sitemap-page .wsp-cat-posts-list li {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+.sitemap-page .page-content a,
+.sitemap-page .wsp-container a {
+  color: #cc3366;
+  text-decoration: underline;
+}
+
+.sitemap-page .page-content a:hover,
+.sitemap-page .wsp-container a:hover {
+  color: #99264d;
+}
+
+.sitemap-page .wsp-category {
+  margin-bottom: 1rem;
+}
+
+.sitemap-page strong {
+  font-weight: 700;
+}
+
+@media (max-width: 1024px) {
+  body.page-id-124 main.site-main,
+  .sitemap-page main.site-main {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

@@ -1,0 +1,22 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import ProductGuide from '../../components/ProductGuide.astro';
+import { getProductGuide } from '../../data/productGuides';
+
+const guide = getProductGuide('beste-donzen-dekbed');
+
+if (!guide) {
+  throw new Error('Missing product guide: beste-donzen-dekbed');
+}
+---
+<SiteLayout
+  title={`${guide.title} | Vind ze hier`}
+  description={guide.description}
+  canonicalPath="/beste-donzen-dekbed/"
+  ogImage={guide.ogImage}
+  ogType="article"
+>
+  <div class="home-wrap">
+    <ProductGuide guide={guide} />
+  </div>
+</SiteLayout>

@@ -1,23 +1,147 @@
 ---
-import PageLayout from '../../layouts/PageLayout.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
 ---
-<PageLayout
-  title="Over ons"
+<SiteLayout
+  title="Over ons | Interieurdesignerweb.nl"
   description="Leer meer over Interieurdesignerweb.nl. Wij helpen je bij het vinden van de beste producten en handige tips voor je interieur."
+  canonicalPath="/over-ons/"
 >
-  <article class="prose reveal">
-    <h1>Over ons</h1>
-    <p>
-      Welkom bij Interieurdesignerweb.nl. Wij zijn dé plek waar je alles vindt over het inrichten
-      van je huis. Of je nu op zoek bent naar de beste meubels, elektronica, beddengoed of
-      interieurtips — wij helpen je graag op weg.
-    </p>
-    <p>
-      Ons team vergelijkt en beoordeelt producten zodat jij de beste keuze kunt maken voor jouw
-      woning. Daarnaast delen we regelmatig handige tips en inspiratie op ons blog.
-    </p>
-    <p>
-      Heb je vragen of suggesties? Neem gerust <a href="/contact/">contact</a> met ons op.
-    </p>
-  </article>
-</PageLayout>
+  <section class="about-hero">
+    <div class="about-hero__media" aria-hidden="true">
+      <img
+        src="/wp-content/uploads/2024/03/pexels-skitterphoto-9312-1536x1022.jpg"
+        alt=""
+        width="1536"
+        height="1022"
+      />
+      <div class="about-hero__veil"></div>
+    </div>
+    <div class="home-wrap">
+      <div class="about-hero__copy reveal">
+        <p class="page-hero__label" style="color: rgba(251,252,251,0.85);">Over ons</p>
+        <h1>Wij helpen je huis mooier maken</h1>
+        <p>
+          Interieurdesignerweb.nl is dé plek voor productvergelijkingen, tips en inspiratie bij het
+          inrichten van je woning.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="home-wrap page-section">
+    <div class="about-grid">
+      <div class="theme-content reveal">
+        <h2>Minder twijfel, betere keuzes</h2>
+        <p>
+          Of je nu op zoek bent naar meubels, elektronica, beddengoed of praktische woonoplossingen —
+          wij zetten de belangrijkste keuzes overzichtelijk voor je op een rij.
+        </p>
+        <p>
+          Ons doel is simpel: minder twijfel, betere keuzes. Daarom combineren we eerlijke
+          productinformatie met blogartikelen die je verder helpen.
+        </p>
+        <p>
+          Heb je vragen of suggesties? Neem gerust <a href="/contact/">contact</a> met ons op.
+        </p>
+      </div>
+      <aside class="about-panel reveal">
+        <p class="about-panel__label">Wat je bij ons vindt</p>
+        <ul>
+          <li>Top 10 productgidsen per categorie</li>
+          <li>Heldere vergelijkingen met affiliate-links</li>
+          <li>Praktische interieurtips op het blog</li>
+        </ul>
+        <a class="btn btn--solid" href="/blog/">Naar het blog</a>
+      </aside>
+    </div>
+  </div>
+</SiteLayout>
+
+<style>
+  .about-hero {
+    position: relative;
+    min-height: clamp(18rem, 42vw, 26rem);
+    display: grid;
+    align-items: end;
+    color: var(--home-white);
+    overflow: hidden;
+  }
+
+  .about-hero__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .about-hero__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .about-hero__veil {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(16, 22, 18, 0.25), rgba(16, 22, 18, 0.72)),
+      linear-gradient(90deg, rgba(22, 56, 43, 0.55), transparent 60%);
+  }
+
+  .about-hero__copy {
+    position: relative;
+    padding: clamp(3rem, 8vw, 5rem) 0 clamp(2rem, 5vw, 3rem);
+    max-width: 36rem;
+  }
+
+  .about-hero__copy h1 {
+    margin: 0 0 0.85rem;
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 5vw, 3.2rem);
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+  }
+
+  .about-hero__copy p:last-child {
+    margin: 0;
+    color: rgba(251, 252, 251, 0.88);
+  }
+
+  .about-grid {
+    display: grid;
+    gap: 2rem;
+  }
+
+  @media (min-width: 860px) {
+    .about-grid {
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 3rem;
+      align-items: start;
+    }
+  }
+
+  .about-panel {
+    padding: 1.5rem;
+    background:
+      linear-gradient(145deg, rgba(36, 92, 69, 0.1), transparent 55%),
+      rgba(251, 252, 251, 0.75);
+    border: 1px solid var(--home-line);
+  }
+
+  .about-panel__label {
+    margin: 0 0 0.85rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--home-moss);
+  }
+
+  .about-panel ul {
+    margin: 0 0 1.5rem;
+    padding-left: 1.1rem;
+    color: var(--home-ink-soft);
+  }
+
+  .about-panel li {
+    margin-bottom: 0.45rem;
+  }
+</style>

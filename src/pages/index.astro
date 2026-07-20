@@ -1,21 +1,420 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import Hero from '../components/Hero.astro';
-import Features from '../components/Features.astro';
-import Services from '../components/Services.astro';
-import ProductGrid from '../components/ProductGrid.astro';
-import LinkColumns from '../components/LinkColumns.astro';
-import LatestArticles from '../components/LatestArticles.astro';
+import { getCollection } from 'astro:content';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { categoryPages } from '../data/categories';
+import { popularProducts, recentReviews } from '../data/homepage';
+
+const title = 'Een mooi interieur voor je huis | Interieurdesignerweb.nl';
+const description =
+  'Wil je je huis goed inrichten? Wij helpen je met de beste producten en handige tips om dit te kunnen doen!';
+
+const featuredArticles = (await getCollection('blog'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 4);
+const spotlightProducts = popularProducts.slice(0, 8);
+const latestReviews = recentReviews.slice(0, 10);
 ---
-<BaseLayout title="Home">
-  <Header slot="header" />
-  <Hero />
-  <Features />
-  <Services />
-  <ProductGrid />
-  <LinkColumns />
-  <LatestArticles />
-  <Footer slot="footer" />
-</BaseLayout>
+<SiteLayout title={title} description={description} canonicalPath="/">
+  <section class="hero" aria-label="Introductie">
+    <div class="hero__media" aria-hidden="true">
+      <img
+        src="/wp-content/uploads/2024/05/stolmeijer-vijfhuizen-01-web-1536x864.webp"
+        alt=""
+        width="1536"
+        height="864"
+        fetchpriority="high"
+      />
+      <div class="hero__veil"></div>
+    </div>
+    <div class="home-wrap">
+      <div class="hero__content">
+        <p class="hero__brand">Interieurdesignerweb</p>
+        <h1 class="hero__title">Ruimte die aanvoelt als thuis</h1>
+        <p class="hero__lede">
+          Heldere productvergelijkingen en interieurtips, zodat je met vertrouwen kiest wat bij jouw huis past.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--solid hero-btn" href="#categorieen">Ontdek categorieën</a>
+          <a class="btn btn--ghost hero-btn hero-btn--ghost" href="/blog/">Lees het blog</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section categories" id="categorieen">
+    <div class="home-wrap">
+      <div class="section__intro reveal">
+        <h2>Waar wil je beginnen?</h2>
+        <p>Kies een categorie en vind snel de producten die bij jouw ruimte passen.</p>
+      </div>
+      <ul class="cat-list">
+        {categoryPages.map((cat, i) => (
+          <li class="reveal" style={`--i:${i}`}>
+            <a class="cat-link" href={`/${cat.slug}/`}>
+              <span class="cat-link__index">{String(i + 1).padStart(2, '0')}</span>
+              <span class="cat-link__copy">
+                <strong>{cat.title}</strong>
+                <span>{cat.description}</span>
+              </span>
+              <span class="cat-link__arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section spotlight">
+    <div class="home-wrap spotlight__grid">
+      <div class="spotlight__visual reveal">
+        <img
+          src="/wp-content/uploads/2024/03/pexels-skitterphoto-9312-1536x1022.jpg"
+          alt="Sfeervol interieur met natuurlijk licht"
+          width="1536"
+          height="1022"
+          loading="lazy"
+        />
+      </div>
+      <div class="spotlight__copy reveal">
+        <h2>Populaire keuzes</h2>
+        <p>Deze producten zoeken bezoekers het vaakst — handig als startpunt voor jouw shortlist.</p>
+        <ul class="plain-list">
+          {spotlightProducts.map((item) => (
+            <li>
+              <a href={item.href}>{item.title}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section articles">
+    <div class="home-wrap">
+      <div class="section__intro reveal">
+        <h2>Vers van het blog</h2>
+        <p>Inspiratie en praktische tips voor een interieur dat werkt — en mooi oogt.</p>
+      </div>
+      <div class="card-grid card-grid--3" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+        {featuredArticles.map((post, i) => (
+          <a class="theme-card reveal" style={`--i:${i}`} href={`/${post.data.slug || post.id}/`}>
+            <div class="theme-card__media">
+              <img src={post.data.image} alt="" width="800" height="533" loading="lazy" />
+            </div>
+            <h3>{post.data.title}</h3>
+            <span class="theme-card__cta">Lees verder</span>
+          </a>
+        ))}
+      </div>
+      <p class="section__more reveal">
+        <a href="/blog/">Alle artikelen bekijken →</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section reviews">
+    <div class="home-wrap">
+      <div class="section__intro reveal">
+        <h2>Recent bekeken</h2>
+        <p>Meer gidsen om snel te vergelijken en te kiezen.</p>
+      </div>
+      <ul class="chip-flow reveal">
+        {latestReviews.map((item) => (
+          <li>
+            <a href={item.href}>{item.title}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</SiteLayout>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: min(100svh, 860px);
+    display: grid;
+    align-items: end;
+    overflow: hidden;
+    color: var(--home-white);
+  }
+
+  .hero__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.06);
+    animation: heroZoom 12s var(--home-ease) forwards;
+  }
+
+  .hero__veil {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(16, 22, 18, 0.18) 0%, rgba(16, 22, 18, 0.55) 48%, rgba(16, 22, 18, 0.78) 100%),
+      linear-gradient(90deg, rgba(16, 22, 18, 0.45) 0%, transparent 55%);
+  }
+
+  .hero .home-wrap {
+    position: relative;
+    z-index: 1;
+    padding-block: clamp(5rem, 14vh, 8rem) clamp(3rem, 8vh, 5rem);
+  }
+
+  .hero__content {
+    max-width: 40rem;
+    animation: heroRise 1s var(--home-ease) both;
+  }
+
+  .hero__brand {
+    margin: 0 0 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.8vw, 1.9rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .hero__title {
+    margin: 0 0 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 7vw, 4.4rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+    max-width: 11ch;
+  }
+
+  .hero__lede {
+    margin: 0 0 1.75rem;
+    max-width: 32rem;
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    line-height: 1.55;
+    color: rgba(251, 252, 251, 0.88);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .hero-btn {
+    background: var(--home-white);
+    color: var(--home-ink);
+  }
+
+  .hero-btn--ghost {
+    background: transparent;
+    border-color: rgba(251, 252, 251, 0.45);
+    color: var(--home-white);
+  }
+
+  .hero-btn--ghost:hover {
+    background: rgba(251, 252, 251, 0.1);
+    color: var(--home-white);
+  }
+
+  .section {
+    padding-block: clamp(4rem, 10vw, 7rem);
+  }
+
+  .section__intro {
+    max-width: 36rem;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+
+  .section__intro h2,
+  .spotlight__copy h2 {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.85rem, 4vw, 2.75rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+  }
+
+  .section__intro p,
+  .spotlight__copy > p {
+    margin: 0;
+    color: var(--home-ink-soft);
+  }
+
+  .cat-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--home-line);
+  }
+
+  .cat-link {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem 1.25rem;
+    align-items: center;
+    padding: 1.35rem 0;
+    border-bottom: 1px solid var(--home-line);
+    transition: padding-left 0.35s var(--home-ease);
+  }
+
+  .cat-link:hover {
+    padding-left: 0.5rem;
+  }
+
+  .cat-link__index {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--home-moss);
+    font-size: 0.95rem;
+  }
+
+  .cat-link__copy {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .cat-link__copy strong {
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 2.5vw, 1.55rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .cat-link__copy span {
+    color: var(--home-ink-soft);
+    font-size: 0.95rem;
+  }
+
+  .cat-link__arrow {
+    color: var(--home-moss);
+    font-size: 1.25rem;
+    transition: transform 0.3s var(--home-ease);
+  }
+
+  .cat-link:hover .cat-link__arrow {
+    transform: translateX(4px);
+  }
+
+  .spotlight {
+    background:
+      linear-gradient(180deg, rgba(36, 92, 69, 0.06), transparent 40%),
+      var(--home-mist);
+  }
+
+  .spotlight__grid {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: center;
+  }
+
+  .spotlight__visual {
+    overflow: hidden;
+    min-height: 280px;
+  }
+
+  .spotlight__visual img {
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    object-fit: cover;
+    filter: saturate(0.92);
+  }
+
+  .plain-list {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .plain-list a {
+    display: inline-block;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+    transition:
+      color 0.25s var(--home-ease),
+      border-color 0.25s var(--home-ease);
+  }
+
+  .plain-list a:hover {
+    color: var(--home-moss);
+    border-bottom-color: rgba(36, 92, 69, 0.35);
+  }
+
+  .section__more {
+    margin: 2rem 0 0;
+  }
+
+  .section__more a {
+    font-weight: 600;
+    color: var(--home-moss);
+  }
+
+  .chip-flow {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .chip-flow a {
+    display: inline-flex;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid var(--home-line);
+    background: rgba(251, 252, 251, 0.7);
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition:
+      background 0.25s var(--home-ease),
+      border-color 0.25s var(--home-ease),
+      color 0.25s var(--home-ease);
+  }
+
+  .chip-flow a:hover {
+    border-color: rgba(36, 92, 69, 0.4);
+    color: var(--home-moss-deep);
+    background: rgba(36, 92, 69, 0.06);
+  }
+
+  @keyframes heroZoom {
+    from {
+      transform: scale(1.08);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes heroRise {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (min-width: 800px) {
+    .spotlight__grid {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__media img,
+    .hero__content {
+      animation: none;
+    }
+  }
+</style>

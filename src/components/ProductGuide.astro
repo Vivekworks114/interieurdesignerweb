@@ -1,0 +1,323 @@
+---
+import { getCollection } from 'astro:content';
+import type { ProductGuide } from '../data/productGuides';
+import { mainNavigation } from '../data/navigation';
+
+interface Props {
+  guide: ProductGuide;
+}
+
+const { guide } = Astro.props;
+
+const closingTitles = new Set(['onze laatste woorden']);
+const faqs = guide.faqs.filter((f) => !closingTitles.has(f.question.toLowerCase()));
+const closing = guide.faqs.find((f) => closingTitles.has(f.question.toLowerCase()));
+
+const products = guide.products.map((product, index) => ({
+  ...product,
+  anchor: `product-${index + 1}`,
+  rank: index + 1,
+}));
+
+const firstProductId = products[0]?.anchor ?? 'top-10';
+
+const tocItems = [
+  ...guide.introSections.map((s) => ({
+    id: slugify(s.heading),
+    label: s.heading,
+  })),
+  ...products.map((p) => ({
+    id: p.anchor,
+    label: `${p.rank}. ${shorten(p.name, 42)}`,
+  })),
+  ...(faqs.length ? [{ id: 'veel-gestelde-vragen', label: 'Veel gestelde vragen' }] : []),
+];
+
+function slugify(text: string) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .slice(0, 80);
+}
+
+function shorten(text: string, max: number) {
+  if (text.length <= max) return text;
+  return `${text.slice(0, max - 1).trim()}…`;
+}
+
+function stars(rating: number) {
+  const full = Math.round(Math.min(5, Math.max(0, rating)));
+  return Array.from({ length: 5 }, (_, i) => i < full);
+}
+
+function capitalizeLabel(label: string) {
+  if (!label) return label;
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+const author = guide.author ?? {
+  name: 'Jacob Jones',
+  bio: 'Mijn naam is Jacob Jones. Ik vind het zelf ontzettend belangrijk dat mijn interieur er op-en-top uit ziet. Samen met de deskundigen ben ik dan ook op pad gegaan om dit waar te kunnen maken. Het is namelijk wel belangrijk om een deskundig oordeel te hebben over de dingen die ik schrijf.',
+  image: '',
+};
+
+const opening =
+  guide.description && !guide.lead.some((p) => p.includes(guide.description.slice(0, 40)))
+    ? [guide.description, ...guide.lead]
+    : guide.lead;
+
+const categoryCrumb = guide.breadcrumbs.find((c) => c.href && c.href !== '/');
+const categoryHref = categoryCrumb?.href ?? null;
+
+const siblingGuides =
+  mainNavigation
+    .find((item) => item.href === categoryHref)
+    ?.children?.filter((child) => child.href !== `/${guide.slug}/`)
+    .slice(0, 6) ?? [];
+
+const latestArticles = (await getCollection('blog'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 6);
+---
+<article class="guide">
+  <header class="guide__hero reveal">
+    <nav class="guide__crumbs" aria-label="Breadcrumb">
+      <ol>
+        {guide.breadcrumbs.map((crumb, i) => (
+          <li>
+            {crumb.href && i < guide.breadcrumbs.length - 1 ? (
+              <a href={crumb.href}>{capitalizeLabel(crumb.label)}</a>
+            ) : (
+              <span aria-current={i === guide.breadcrumbs.length - 1 ? 'page' : undefined}>
+                {capitalizeLabel(crumb.label)}
+              </span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+
+    <div class="guide__hero-grid">
+      <div>
+        <p class="page-hero__label">Top 10 gids</p>
+        <h1>{guide.heading}</h1>
+        {guide.updated && <p class="guide__updated">{guide.updated}</p>}
+        {opening[0] && <p class="guide__lede">{opening[0]}</p>}
+        <div class="guide__hero-actions">
+          <a class="btn btn--solid" href={`#${firstProductId}`}>Bekijk top 10</a>
+          {faqs.length > 0 && (
+            <a class="btn btn--ghost" href="#veel-gestelde-vragen">Veelgestelde vragen</a>
+          )}
+        </div>
+      </div>
+
+      <aside class="guide__summary reveal" aria-label="Samenvatting">
+        <p class="guide__summary-label">In het kort</p>
+        <ul>
+          <li>
+            <strong>{products.length}</strong>
+            <span>geteste producten</span>
+          </li>
+          <li>
+            <strong>5/5</strong>
+            <span>gemiddelde score</span>
+          </li>
+          <li>
+            <strong>Bol</strong>
+            <span>actuele prijzen</span>
+          </li>
+        </ul>
+      </aside>
+    </div>
+  </header>
+
+  <nav class="guide__toc-mobile reveal" aria-label="Snelle navigatie">
+    <p>Spring naar</p>
+    <div class="guide__toc-mobile-track">
+      {products.map((p) => (
+        <a href={`#${p.anchor}`}>#{p.rank}</a>
+      ))}
+      {faqs.length > 0 && <a href="#veel-gestelde-vragen">FAQ</a>}
+    </div>
+  </nav>
+
+  <div class="guide__layout">
+    <div class="guide__main">
+      {opening.length > 1 && (
+        <section class="guide__lead theme-content reveal">
+          {opening.slice(1).map((p) => (
+            <p>{p}</p>
+          ))}
+        </section>
+      )}
+
+      {guide.introSections.map((section) => (
+        <section class="guide__intro theme-content reveal" id={slugify(section.heading)}>
+          <h2>{section.heading}</h2>
+          {section.paragraphs.map((p) => (
+            <p>{p}</p>
+          ))}
+        </section>
+      ))}
+
+      <div class="guide__products-head reveal" id="top-10">
+        <p class="page-hero__label">Vergelijking</p>
+        <h2>Beste producten op volgorde</h2>
+        <p>Scroll door de top {products.length} en open de Bol-link voor de actuele prijs.</p>
+      </div>
+
+      <div class="guide__products">
+        {products.map((product, index) => (
+          <section
+            class="guide-product reveal"
+            id={product.anchor}
+            style={`--i:${index}`}
+          >
+            <div class="guide-product__media">
+              <span class="guide-product__badge" aria-hidden="true">
+                {String(product.rank).padStart(2, '0')}
+              </span>
+              {product.image ? (
+                <img
+                  src={product.image}
+                  alt=""
+                  width="640"
+                  height="640"
+                  loading={index < 2 ? 'eager' : 'lazy'}
+                />
+              ) : (
+                <div class="guide-product__placeholder" />
+              )}
+            </div>
+            <div class="guide-product__body">
+              <h2>{product.name}</h2>
+              <div class="guide-product__rating" aria-label={`Waardering ${product.rating} van 5`}>
+                {stars(product.rating).map((on) => (
+                  <span class:list={['star', { 'star--on': on }]} aria-hidden="true">★</span>
+                ))}
+                <span class="guide-product__rating-text">Waardering {product.rating} van 5</span>
+              </div>
+              {product.description.split(/\n\n+/).map((para) => (
+                <p>{para}</p>
+              ))}
+              {product.affiliateUrl && (
+                <a
+                  class="btn btn--solid guide-product__cta"
+                  href={product.affiliateUrl}
+                  target="_blank"
+                  rel="nofollow sponsored noopener"
+                >
+                  {product.affiliateLabel || 'Bekijk prijs bij Bol'}
+                </a>
+              )}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      {faqs.length > 0 && (
+        <section class="guide-faq reveal" id="veel-gestelde-vragen">
+          <h2>Veel gestelde vragen</h2>
+          <div class="guide-faq__list">
+            {faqs.map((faq) => (
+              <details class="guide-faq__item">
+                <summary>{faq.question}</summary>
+                <div class="guide-faq__answer">
+                  {faq.answer.map((p) => (
+                    <p>{p}</p>
+                  ))}
+                </div>
+              </details>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {closing && (
+        <section class="guide__closing theme-content reveal">
+          <h2>{closing.question}</h2>
+          {closing.answer.map((p) => (
+            <p>{p}</p>
+          ))}
+        </section>
+      )}
+
+      <aside class="guide-author reveal">
+        <div class="guide-author__media">
+          {author.image ? (
+            <img src={author.image} alt="" width="96" height="96" loading="lazy" />
+          ) : (
+            <div class="guide-author__initials" aria-hidden="true">
+              {author.name
+                .split(' ')
+                .map((w) => w[0])
+                .join('')
+                .slice(0, 2)}
+            </div>
+          )}
+        </div>
+        <div>
+          <p class="guide-author__label">Auteur</p>
+          <h3>{author.name}</h3>
+          {author.bio && <p>{author.bio}</p>}
+          {guide.published && <p class="guide-author__date">{guide.published}</p>}
+        </div>
+      </aside>
+
+      {siblingGuides.length > 0 && (
+        <section class="guide-related reveal">
+          <div class="guide-related__head">
+            <p class="page-hero__label">Meer in deze categorie</p>
+            <h2>Vergelijkbare gidsen</h2>
+          </div>
+          <ul class="guide-related__list">
+            {siblingGuides.map((item) => (
+              <li>
+                <a href={item.href}>
+                  <span>{item.label}</span>
+                  <span aria-hidden="true">→</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {latestArticles.length > 0 && (
+        <section class="guide-related reveal">
+          <div class="guide-related__head">
+            <p class="page-hero__label">Blog</p>
+            <h2>Laatste artikelen</h2>
+          </div>
+          <div class="card-grid card-grid--3">
+            {latestArticles.map((post) => (
+              <a class="theme-card" href={`/${post.data.slug || post.id}/`}>
+                <div class="theme-card__media">
+                  <img src={post.data.image} alt="" width="800" height="533" loading="lazy" />
+                </div>
+                <h3>{post.data.title}</h3>
+                <span class="theme-card__cta">Lees verder →</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+
+    {tocItems.length > 0 && (
+      <aside class="guide__toc reveal" aria-label="Inhoudsopgave">
+        <p class="guide__toc-title">Inhoudsopgave</p>
+        <ol>
+          {tocItems.map((item) => (
+            <li>
+              <a href={`#${item.id}`}>{item.label}</a>
+            </li>
+          ))}
+        </ol>
+      </aside>
+    )}
+  </div>
+</article>

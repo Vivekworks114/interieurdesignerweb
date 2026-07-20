@@ -1,0 +1,133 @@
+---
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const siteUrl = 'https://interieurdesignerweb.nl';
+---
+<!doctype html>
+<html lang="nl-NL">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={`${siteUrl}/`} />
+    <meta property="og:locale" content="nl_NL" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={`${siteUrl}/`} />
+    <meta property="og:site_name" content="interieurdesignerweb.nl" />
+    <meta property="og:image" content={`${siteUrl}/wp-content/uploads/2024/05/stolmeijer-vijfhuizen-01-web.webp`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/wp-content/uploads/2023/02/cropped-Group-78-32x32.png" sizes="32x32" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip" href="#main">Ga naar de inhoud</a>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --home-ink: #101612;
+    --home-ink-soft: #2a342e;
+    --home-moss: #245c45;
+    --home-moss-deep: #16382b;
+    --home-mist: #e7ece8;
+    --home-mist-2: #d3ddd6;
+    --home-paper: #f4f6f4;
+    --home-white: #fbfcfb;
+    --home-line: rgba(16, 22, 18, 0.12);
+    --font-display: 'Bricolage Grotesque', Georgia, serif;
+    --font-body: 'Figtree', system-ui, sans-serif;
+    --home-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    color: var(--home-ink);
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(36, 92, 69, 0.14), transparent 55%),
+      radial-gradient(900px 500px at 100% 0%, rgba(211, 221, 214, 0.9), transparent 50%),
+      linear-gradient(180deg, var(--home-mist) 0%, var(--home-paper) 42%, var(--home-white) 100%);
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .skip {
+    position: absolute;
+    left: 1rem;
+    top: -100%;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    background: var(--home-ink);
+    color: var(--home-white);
+  }
+
+  .skip:focus {
+    top: 1rem;
+  }
+
+  .home-wrap {
+    width: min(1120px, calc(100% - 2.5rem));
+    margin-inline: auto;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.85s var(--home-ease),
+      transform 0.85s var(--home-ease);
+  }
+
+  .reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

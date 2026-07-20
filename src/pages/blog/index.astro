@@ -1,52 +1,54 @@
 ---
-import PageLayout from '../../layouts/PageLayout.astro';
-import BlogCard from '../../components/BlogCard.astro';
-import blogPosts from '../../data/blog-posts.json';
+import { getCollection } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+const title = 'Blog | Interieurdesignerweb.nl';
+const description =
+  'Handige tips en informatie voor je interieur. Bekijk onze nieuwste artikelen over woninginrichting, meubels en interieurproducten.';
+
+const ordered = (await getCollection('blog'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const pageSize = 30;
+const posts = ordered.slice(0, pageSize);
+const totalPages = Math.ceil(ordered.length / pageSize);
 ---
-<PageLayout
-  title="Blog"
-  description="Handige tips en informatie voor je interieur. Bekijk onze nieuwste artikelen over woninginrichting, meubels en interieurproducten."
->
-  <header class="page-header reveal">
-    <p class="page-header__label">Blog</p>
-    <h1>Laatste artikelen</h1>
-    <p>
-      Op ons blog vind je nuttige artikelen over woninginrichting, meubels en interieurproducten.
-      Laat je inspireren en maak het inrichten van je woning een stuk makkelijker.
-    </p>
-  </header>
-  <div class="blog-grid">
-    {blogPosts.map((post) => (
-      <BlogCard title={post.title} href={post.href} image={post.image} />
-    ))}
+<SiteLayout title={title} description={description} canonicalPath="/blog/">
+  <div class="home-wrap">
+    <header class="page-hero reveal">
+      <p class="page-hero__label">Blog</p>
+      <h1>Laatste artikelen</h1>
+      <p>Inspiratie, tips en productkeuzes voor een interieur dat bij jou past.</p>
+    </header>
+
+    <section class="page-section">
+      <div class="card-grid card-grid--3">
+        {posts.map((post) => (
+          <a class="theme-card reveal" href={`/${post.data.slug || post.id}/`}>
+            <div class="theme-card__media">
+              <img src={post.data.image} alt="" width="800" height="533" loading="lazy" />
+            </div>
+            <h2>{post.data.title}</h2>
+            <span class="theme-card__meta">
+              {post.data.pubDate.toLocaleDateString('nl-NL', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </span>
+            <span class="theme-card__cta">Lees verder →</span>
+          </a>
+        ))}
+      </div>
+
+      {totalPages > 1 && (
+        <nav class="pager reveal" aria-label="Paginering">
+          <span class="is-current">1</span>
+          <a href="/blog/2/">2</a>
+          <a href="/blog/2/">Volgende →</a>
+        </nav>
+      )}
+    </section>
   </div>
-</PageLayout>
-
-<style>
-  .page-header {
-    max-width: 52rem;
-    margin-bottom: 3rem;
-  }
-
-  .page-header__label {
-    font-family: var(--font-nav);
-    font-size: 0.8125rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-muted);
-    margin-bottom: 0.75rem;
-  }
-
-  .blog-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    padding-bottom: 2rem;
-  }
-
-  @media (max-width: 767px) {
-    .blog-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
+</SiteLayout>

@@ -1,0 +1,162 @@
+{
+  "slug": "de-onmisbare-keuze-voor-jouw-nieuwe-vloer",
+  "title": "De onmisbare keuze voor jouw nieuwe vloer",
+  "description": "Lees De onmisbare keuze voor jouw nieuwe vloer op Interieurdesignerweb.nl",
+  "canonical": "https://interieurdesignerweb.nl/de-onmisbare-keuze-voor-jouw-nieuwe-vloer/",
+  "ogImage": "/wp-content/uploads/2025/11/Laminaatvloer.jpg",
+  "ogType": "article",
+  "bodyClass": "wp-singular post-template-default single single-post postid-740 single-format-standard wp-embed-responsive wp-theme-hello-elementor hello-elementor-default elementor-default elementor-kit-7 article-page",
+  "template": "classic",
+  "stylesheets": [
+    "/wp-assets/css/hello-reset.css",
+    "/wp-assets/css/hello-theme.css",
+    "/wp-assets/css/hello-header-footer.css",
+    "/wp-assets/css/el-frontend.min.css",
+    "/wp-assets/css/post-7.css",
+    "/wp-assets/css/el-widget-image.min.css",
+    "/wp-assets/css/pro-widget-nav-menu.min.css",
+    "/wp-assets/css/el-widget-heading.min.css",
+    "/wp-assets/css/pro-widget-posts.min.css",
+    "/wp-assets/css/eicons-elementor-icons.min.css",
+    "/wp-assets/css/post-11.css",
+    "/wp-assets/css/post-9.css",
+    "/wp-assets/css/font-jost.css",
+    "/wp-assets/css/fa-fontawesome.min.css",
+    "/wp-assets/css/fa-solid.min.css",
+    "/wp-assets/css/wp-block-library.min.css",
+    "/wp-assets/css/article-page.css"
+  ],
+  "jsonLd": [
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "@id": "https://interieurdesignerweb.nl/de-onmisbare-keuze-voor-jouw-nieuwe-vloer/#article",
+          "isPartOf": {
+            "@id": "https://interieurdesignerweb.nl/de-onmisbare-keuze-voor-jouw-nieuwe-vloer/"
+          },
+          "author": {
+            "name": "admin",
+            "@id": "https://interieurdesignerweb.nl/#/schema/person/3d4c77890ba7b342382412cabf72345f"
+          },
+          "headline": "De onmisbare keuze voor jouw nieuwe vloer",
+          "datePublished": "2025-11-28T14:50:18+00:00",
+          "dateModified": "2025-11-28T14:50:33+00:00",
+          "mainEntityOfPage": {
+            "@id": "https://interieurdesignerweb.nl/de-onmisbare-keuze-voor-jouw-nieuwe-vloer/"
+          },
+          "wordCount": 666,
+          "image": {
+            "@id": "https://interieurdesignerweb.nl/de-onmisbare-keuze-voor-jouw-nieuwe-vloer/#primaryimage"
+          },
+          "thumbnailUrl": "https://interieurdesignerweb.nl/wp-content/uploads/2025/11/Laminaatvloer.jpg",
+          "articleSection": [
+            "Blog"
+          ],
+          "inLanguage": "nl-NL"
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://interieurdesignerweb.nl/de-onmisbare-keuze-voor-jouw-nieuwe-vloer/",
+          "url": "https://interieurdesignerweb.nl/de-onmisbare-keuze-voor-jouw-nieuwe-vloer/",
+          "name": "De onmisbare keuze voor jouw nieuwe vloer",
+          "isPartOf": {
+            "@id": "https://interieurdesignerweb.nl/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://interieurdesignerweb.nl/de-onmisbare-keuze-voor-jouw-nieuwe-vloer/#primaryimage"
+          },
+          "image": {
+            "@id": "https://interieurdesignerweb.nl/de-onmisbare-keuze-voor-jouw-nieuwe-vloer/#primaryimage"
+          },
+          "thumbnailUrl": "https://interieurdesignerweb.nl/wp-content/uploads/2025/11/Laminaatvloer.jpg",
+          "datePublished": "2025-11-28T14:50:18+00:00",
+          "dateModified": "2025-11-28T14:50:33+00:00",
+          "author": {
+            "@id": "https://interieurdesignerweb.nl/#/schema/person/3d4c77890ba7b342382412cabf72345f"
+          },
+          "breadcrumb": {
+            "@id": "https://interieurdesignerweb.nl/de-onmisbare-keuze-voor-jouw-nieuwe-vloer/#breadcrumb"
+          },
+          "inLanguage": "nl-NL",
+          "potentialAction": [
+            {
+              "@type": "ReadAction",
+              "target": [
+                "https://interieurdesignerweb.nl/de-onmisbare-keuze-voor-jouw-nieuwe-vloer/"
+              ]
+            }
+          ]
+        },
+        {
+          "@type": "ImageObject",
+          "inLanguage": "nl-NL",
+          "@id": "https://interieurdesignerweb.nl/de-onmisbare-keuze-voor-jouw-nieuwe-vloer/#primaryimage",
+          "url": "https://interieurdesignerweb.nl/wp-content/uploads/2025/11/Laminaatvloer.jpg",
+          "contentUrl": "https://interieurdesignerweb.nl/wp-content/uploads/2025/11/Laminaatvloer.jpg",
+          "width": 640,
+          "height": 480,
+          "caption": "Laminaatvloer"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://interieurdesignerweb.nl/de-onmisbare-keuze-voor-jouw-nieuwe-vloer/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://interieurdesignerweb.nl/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "De onmisbare keuze voor jouw nieuwe vloer"
+            }
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://interieurdesignerweb.nl/#website",
+          "url": "https://interieurdesignerweb.nl/",
+          "name": "interieurdesignerweb.nl",
+          "description": "interieurdesignerweb.nl",
+          "potentialAction": [
+            {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://interieurdesignerweb.nl/?s={search_term_string}"
+              },
+              "query-input": {
+                "@type": "PropertyValueSpecification",
+                "valueRequired": true,
+                "valueName": "search_term_string"
+              }
+            }
+          ],
+          "inLanguage": "nl-NL"
+        },
+        {
+          "@type": "Person",
+          "@id": "https://interieurdesignerweb.nl/#/schema/person/3d4c77890ba7b342382412cabf72345f",
+          "name": "admin",
+          "image": {
+            "@type": "ImageObject",
+            "inLanguage": "nl-NL",
+            "@id": "https://secure.gravatar.com/avatar/ca3998a8fc2451af78c3c608542695d421cd1d8c97000a380182409ba91b3015?s=96&d=mm&r=g",
+            "url": "https://secure.gravatar.com/avatar/ca3998a8fc2451af78c3c608542695d421cd1d8c97000a380182409ba91b3015?s=96&d=mm&r=g",
+            "contentUrl": "https://secure.gravatar.com/avatar/ca3998a8fc2451af78c3c608542695d421cd1d8c97000a380182409ba91b3015?s=96&d=mm&r=g",
+            "caption": "admin"
+          },
+          "sameAs": [
+            "https://interieurdesignerweb.nl"
+          ],
+          "url": "https://interieurdesignerweb.nl/author/info_yz1j1sd0/"
+        }
+      ]
+    }
+  ],
+  "htmlFile": "elementor/articles/de-onmisbare-keuze-voor-jouw-nieuwe-vloer.html"
+}

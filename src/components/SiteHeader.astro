@@ -1,0 +1,313 @@
+---
+import { mainNavigation } from '../data/navigation';
+
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '/' } = Astro.props;
+const nav = mainNavigation.filter((item) => item.label !== 'Home');
+---
+<header class="topbar">
+  <div class="home-wrap topbar__inner">
+    <a class="brand" href="/" aria-current={currentPath === '/' ? 'page' : undefined}>
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__text">Interieurdesignerweb</span>
+    </a>
+    <nav class="nav" aria-label="Hoofdmenu">
+      <ul class="nav__list">
+        {nav.map((item) => (
+          <li class:list={['nav__item', { 'nav__item--has-children': !!item.children?.length }]}>
+            <a class="nav__link" href={item.href}>
+              {item.label}
+              {item.children?.length ? <span class="nav__caret" aria-hidden="true"></span> : null}
+            </a>
+            {item.children?.length ? (
+              <ul class="nav__submenu" role="list">
+                {item.children.map((child) => (
+                  <li>
+                    <a href={child.href}>{child.label}</a>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-nav" id="mobile-nav" hidden>
+    <div class="home-wrap">
+      {nav.map((item) => (
+        <div class:list={['mobile-nav__group', { 'mobile-nav__group--has-children': !!item.children?.length }]}>
+          <div class="mobile-nav__row">
+            <a href={item.href}>{item.label}</a>
+            {item.children?.length ? (
+              <button
+                class="mobile-nav__expand"
+                type="button"
+                aria-expanded="false"
+                aria-label={`${item.label} submenu`}
+              >
+                <span aria-hidden="true"></span>
+              </button>
+            ) : null}
+          </div>
+          {item.children?.length ? (
+            <ul class="mobile-nav__submenu" hidden>
+              {item.children.map((child) => (
+                <li>
+                  <a href={child.href}>{child.label}</a>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+      ))}
+    </div>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector('.nav-toggle');
+  const panel = document.querySelector('#mobile-nav');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    if (panel instanceof HTMLElement) panel.hidden = open;
+  });
+
+  document.querySelectorAll('.mobile-nav__expand').forEach((button) => {
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      const group = button.closest('.mobile-nav__group');
+      const submenu = group?.querySelector('.mobile-nav__submenu');
+      button.setAttribute('aria-expanded', String(!expanded));
+      if (submenu instanceof HTMLElement) submenu.hidden = expanded;
+    });
+  });
+</script>
+
+<style>
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    backdrop-filter: blur(14px);
+    background: rgba(244, 246, 244, 0.82);
+    border-bottom: 1px solid var(--home-line);
+    overflow: visible;
+  }
+
+  .topbar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-height: 4.25rem;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: -0.02em;
+  }
+
+  .brand__mark {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 2px;
+    background: linear-gradient(135deg, var(--home-moss), var(--home-moss-deep));
+    box-shadow: 0 0 0 4px rgba(36, 92, 69, 0.12);
+  }
+
+  .nav {
+    display: none;
+    align-items: center;
+  }
+
+  .nav__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem 1.1rem;
+  }
+
+  .nav__item {
+    position: relative;
+  }
+
+  .nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.55rem 0;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--home-ink-soft);
+    transition: color 0.25s var(--home-ease);
+  }
+
+  .nav__link:hover,
+  .nav__item--has-children:hover > .nav__link,
+  .nav__item--has-children:focus-within > .nav__link {
+    color: var(--home-moss);
+  }
+
+  .nav__caret {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid currentColor;
+    opacity: 0.7;
+  }
+
+  .nav__submenu {
+    list-style: none;
+    margin: 0;
+    padding: 0.55rem 0;
+    position: absolute;
+    top: calc(100% - 0.15rem);
+    left: 0;
+    min-width: 15.5rem;
+    background: var(--home-white);
+    border: 1px solid var(--home-line);
+    box-shadow: 0 12px 28px rgba(16, 22, 18, 0.12);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(6px);
+    transition:
+      opacity 0.2s var(--home-ease),
+      transform 0.2s var(--home-ease),
+      visibility 0.2s;
+    z-index: 50;
+  }
+
+  .nav__item--has-children:last-child .nav__submenu {
+    left: auto;
+    right: 0;
+  }
+
+  .nav__item--has-children:hover > .nav__submenu,
+  .nav__item--has-children:focus-within > .nav__submenu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+  }
+
+  .nav__submenu a {
+    display: block;
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+    color: var(--home-ink-soft);
+    transition:
+      background 0.2s var(--home-ease),
+      color 0.2s var(--home-ease);
+  }
+
+  .nav__submenu a:hover {
+    background: rgba(36, 92, 69, 0.08);
+    color: var(--home-moss-deep);
+  }
+
+  .nav-toggle {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--home-line);
+    background: transparent;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.55rem;
+    cursor: pointer;
+  }
+
+  .nav-toggle span {
+    display: block;
+    height: 2px;
+    background: var(--home-ink);
+  }
+
+  .mobile-nav {
+    border-top: 1px solid var(--home-line);
+    padding: 0.5rem 0 1.25rem;
+    background: var(--home-paper);
+  }
+
+  .mobile-nav__group {
+    border-bottom: 1px solid var(--home-line);
+  }
+
+  .mobile-nav__row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mobile-nav__row > a {
+    flex: 1;
+    padding: 0.85rem 0;
+    font-weight: 500;
+  }
+
+  .mobile-nav__expand {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--home-line);
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .mobile-nav__expand span {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid var(--home-ink);
+    transition: transform 0.2s var(--home-ease);
+  }
+
+  .mobile-nav__expand[aria-expanded='true'] span {
+    transform: rotate(180deg);
+  }
+
+  .mobile-nav__submenu {
+    list-style: none;
+    margin: 0 0 0.75rem;
+    padding: 0 0 0.35rem 0.75rem;
+  }
+
+  .mobile-nav__submenu a {
+    display: block;
+    padding: 0.45rem 0;
+    font-size: 0.95rem;
+    color: var(--home-ink-soft);
+  }
+
+  @media (min-width: 800px) {
+    .nav {
+      display: flex;
+    }
+
+    .nav-toggle,
+    .mobile-nav {
+      display: none !important;
+    }
+  }
+</style>

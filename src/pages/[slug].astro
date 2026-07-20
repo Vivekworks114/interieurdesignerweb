@@ -1,23 +1,38 @@
 ---
-import PageLayout from '../layouts/PageLayout.astro';
-import blogPosts from '../data/blog-posts.json';
+import { getCollection, render } from 'astro:content';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import ProductGuide from '../components/ProductGuide.astro';
 import products from '../data/products.json';
 import { getCategoryBySlug, getCategoryItems } from '../data/categories';
+import { getProductGuide } from '../data/productGuides';
 
 export async function getStaticPaths() {
-  const blogPaths = blogPosts.map((post) => ({
-    params: { slug: post.slug },
-    props: { type: 'blog' as const, data: post },
+  const allPosts = (await getCollection('blog')).filter((post) => !post.data.draft);
+
+  const blogPaths = allPosts.map((post) => ({
+    params: { slug: post.data.slug || post.id },
+    props: { type: 'blog' as const, post },
   }));
 
-  const productPaths = products.map((product) => ({
-    params: { slug: product.slug },
-    props: { type: 'product' as const, data: product },
-  }));
+  // Dedicated page exists for this slug
+  const dedicatedProductSlugs = new Set(['beste-donzen-dekbed']);
+  const blogSlugs = new Set(allPosts.map((p) => p.data.slug || p.id));
+
+  const productPaths = products
+    .filter((product) => !dedicatedProductSlugs.has(product.slug) && !blogSlugs.has(product.slug))
+    .map((product) => ({
+      params: { slug: product.slug },
+      props: { type: 'product' as const, data: product },
+    }));
 
   const categorySlugs = [
-    'bedden-en-beddengoed', 'elektronica', 'meubelen', 'verkoeling-en-verwarming',
-    'woonaccessoires', 'wasmachines-en-accessoires', 'veiligheid',
+    'bedden-en-beddengoed',
+    'elektronica',
+    'meubelen',
+    'verkoeling-en-verwarming',
+    'woonaccessoires',
+    'wasmachines-en-accessoires',
+    'veiligheid',
   ];
 
   const categoryPaths = categorySlugs.map((slug) => ({
@@ -38,123 +53,222 @@ function slugToTitle(s: string) {
     .join(' ');
 }
 
+function decodeEntities(text: string) {
+  return text
+    .replace(/&#039;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"');
+}
+
 const category = props.type === 'category' ? getCategoryBySlug(props.slug) : null;
 const categoryItems = props.type === 'category' ? getCategoryItems(props.slug) : [];
 const categoryTitle = category?.title ?? (props.type === 'category' ? slugToTitle(props.slug) : '');
 const categoryDescription =
   category?.description ??
   (props.type === 'category' ? `Bekijk ons aanbod ${categoryTitle.toLowerCase()} op Interieurdesignerweb.nl` : '');
+
+const blogPost = props.type === 'blog' ? props.post : null;
+const rendered = blogPost ? await render(blogPost) : null;
+const Content = rendered?.Content;
+
+const allPosts = (await getCollection('blog')).filter((post) => !post.data.draft);
+const relatedPosts = blogPost
+  ? allPosts
+      .filter((p) => (p.data.slug || p.id) !== (blogPost.data.slug || blogPost.id))
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+      .slice(0, 3)
+  : [];
+
+const productGuide =
+  props.type === 'product' && props.data ? getProductGuide(props.data.slug) : undefined;
 ---
-{props.type === 'blog' && props.data && (
-  <PageLayout title={props.data.title} description={`Lees ${props.data.title} op Interieurdesignerweb.nl`} image={props.data.image}>
-    <article class="blog-post reveal">
-      <div class="blog-post__hero">
-        <img src={props.data.image} alt={props.data.title} width="800" height="533" />
-      </div>
-      <h1>{props.data.title}</h1>
-      <div class="prose">
-        <p>
-          Welkom op Interieurdesignerweb.nl. In dit artikel delen we onze tips en ervaringen over
-          {` ${props.data.title.toLowerCase()}.`} Bekijk regelmatig ons blog voor de nieuwste
-          interieurtips en productvergelijkingen.
-        </p>
-        <p>
-          Wil je meer inspiratie voor je interieur? Bekijk ook onze
-          <a href="/blog/">andere blogartikelen</a> of ontdek onze
-          <a href="/meubelen/">populaire producten</a>.
-        </p>
-      </div>
-    </article>
-  </PageLayout>
+{props.type === 'blog' && blogPost && Content && (
+  <SiteLayout
+    title={blogPost.data.title}
+    description={blogPost.data.description}
+    canonicalPath={`/${blogPost.data.slug || blogPost.id}/`}
+    ogImage={blogPost.data.image}
+    ogType="article"
+  >
+    <div class="home-wrap page-section">
+      <article class="theme-content md-article reveal">
+        <header class="page-hero" style="padding-top: 0;">
+          <p class="page-hero__label">Artikel</p>
+          <h1>{blogPost.data.title}</h1>
+          <p>
+            {blogPost.data.pubDate.toLocaleDateString('nl-NL', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </p>
+        </header>
+        {blogPost.data.image && (
+          <img
+            src={blogPost.data.image}
+            alt=""
+            width="1200"
+            height="675"
+            class="article-hero-img"
+          />
+        )}
+        <Content />
+      </article>
+
+      {relatedPosts.length > 0 && (
+        <aside class="related reveal">
+          <h2>Meer artikelen</h2>
+          <div class="card-grid card-grid--3">
+            {relatedPosts.map((post) => (
+              <a class="theme-card" href={`/${post.data.slug || post.id}/`}>
+                <div class="theme-card__media">
+                  <img src={post.data.image} alt="" width="800" height="533" loading="lazy" />
+                </div>
+                <h3>{post.data.title}</h3>
+                <span class="theme-card__cta">Lees verder →</span>
+              </a>
+            ))}
+          </div>
+        </aside>
+      )}
+    </div>
+  </SiteLayout>
 )}
 
-{props.type === 'product' && props.data && (
-  <PageLayout
-    title={props.data.title}
-    description={`${props.data.title} - Vergelijk en vind de beste optie op Interieurdesignerweb.nl`}
-    image={props.data.image}
+{props.type === 'product' && props.data && productGuide && (
+  <SiteLayout
+    title={`${productGuide.title} | Vind ze hier`}
+    description={productGuide.description}
+    canonicalPath={`/${productGuide.slug}/`}
+    ogImage={productGuide.ogImage}
+    ogType="article"
   >
-    <article class="product-page reveal">
-      <div class="product-page__hero">
-        <img src={props.data.image} alt={props.data.title} width="800" height="533" />
-      </div>
-      <h1>{props.data.title}</h1>
-      <div class="prose">
+    <div class="home-wrap">
+      <ProductGuide guide={productGuide} />
+    </div>
+  </SiteLayout>
+)}
+
+{props.type === 'product' && props.data && !productGuide && (
+  <SiteLayout
+    title={decodeEntities(props.data.title)}
+    description={`${decodeEntities(props.data.title)} — vergelijk en vind de beste optie op Interieurdesignerweb.nl`}
+    canonicalPath={`/${props.data.slug}/`}
+    ogImage={props.data.image}
+  >
+    <div class="home-wrap page-section">
+      <header class="page-hero reveal">
+        <p class="page-hero__label">Productgids</p>
+        <h1>{decodeEntities(props.data.title)}</h1>
         <p>
-          Op Interieurdesignerweb.nl helpen we je bij het vinden van de beste {slugToTitle(props.data.slug).toLowerCase()}.
-          Wij vergelijken verschillende producten en geven je eerlijk advies zodat je de juiste keuze kunt maken.
+          Vergelijk opties, let op kwaliteit en kies wat past bij jouw interieur en budget.
         </p>
-        <p>
-          Ben je op zoek naar meer interieurproducten? Bekijk onze categorieën of lees onze
-          <a href="/blog/">handige tips</a> op het blog.
-        </p>
+      </header>
+
+      <div class="product-layout reveal">
+        <div class="product-layout__media">
+          <img src={props.data.image} alt="" width="800" height="533" />
+        </div>
+        <div class="theme-content">
+          <p>
+            Op Interieurdesignerweb.nl helpen we je bij het vinden van de beste{' '}
+            {slugToTitle(props.data.slug).toLowerCase()}. We zetten de belangrijkste aandachtspunten
+            op een rij, zodat je sneller een goede keuze maakt.
+          </p>
+          <p>
+            Wil je meer inspiratie? Bekijk gerelateerde categorieën of lees onze{' '}
+            <a href="/blog/">nieuwste blogartikelen</a>.
+          </p>
+          <div class="product-actions">
+            <a class="btn btn--solid" href="/blog/">Bekijk tips</a>
+            <a class="btn btn--ghost" href="/">Naar home</a>
+          </div>
+        </div>
       </div>
-    </article>
-  </PageLayout>
+    </div>
+  </SiteLayout>
 )}
 
 {props.type === 'category' && (
-  <PageLayout title={categoryTitle} description={categoryDescription}>
-    <article class="category-page reveal">
-      <h1>{categoryTitle}</h1>
-      <p>{categoryDescription}</p>
-      <div class="category-page__links">
-        {categoryItems.map((item) => (
-          <p><a href={item.href}>{item.label}</a></p>
+  <SiteLayout
+    title={categoryTitle}
+    description={categoryDescription}
+    canonicalPath={`/${props.slug}/`}
+  >
+    <div class="home-wrap page-section">
+      <header class="page-hero reveal">
+        <p class="page-hero__label">Categorie</p>
+        <h1>{categoryTitle}</h1>
+        <p>{categoryDescription}</p>
+      </header>
+
+      <div class="category-grid reveal">
+        {categoryItems.map((item, i) => (
+          <a href={item.href}>
+            <span class="category-grid__index">{String(i + 1).padStart(2, '0')}</span>
+            <span class="category-grid__label">{item.label}</span>
+            <span class="category-grid__arrow" aria-hidden="true">→</span>
+          </a>
         ))}
       </div>
-    </article>
-  </PageLayout>
+    </div>
+  </SiteLayout>
 )}
 
 <style>
-  .blog-post__hero,
-  .product-page__hero {
-    aspect-ratio: 3 / 2;
-    max-width: 48rem;
-    margin-bottom: 2rem;
-    border-radius: var(--card-radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
+  .related {
+    margin-top: clamp(3rem, 7vw, 4.5rem);
+    padding-top: 2rem;
+    border-top: 1px solid var(--home-line);
   }
 
-  .blog-post__hero img,
-  .product-page__hero img {
+  .related h2 {
+    margin: 0 0 1.5rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    letter-spacing: -0.03em;
+  }
+
+  .product-layout {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .product-layout__media {
+    overflow: hidden;
+    background: var(--home-mist-2);
+    aspect-ratio: 3 / 2;
+  }
+
+  .product-layout__media img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  .blog-post h1,
-  .product-page h1,
-  .category-page h1 {
-    margin-bottom: 1.25rem;
+  .product-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
   }
 
-  .category-page__links {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem 2rem;
-    margin-top: 2rem;
+  .md-article :global(img) {
+    border-radius: 0;
   }
 
-  .category-page__links p {
-    margin: 0;
-    line-height: 2;
+  .article-hero-img {
+    width: 100%;
+    margin: 0 0 1.75rem;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
   }
 
-  .category-page__links a {
-    color: var(--color-text);
-    transition: color var(--transition);
-  }
-
-  .category-page__links a:hover {
-    color: var(--color-accent);
-  }
-
-  @media (max-width: 599px) {
-    .category-page__links {
-      grid-template-columns: 1fr;
+  @media (min-width: 860px) {
+    .product-layout {
+      grid-template-columns: 1fr 1.05fr;
+      gap: 2.5rem;
     }
   }
 </style>
