@@ -1,0 +1,26 @@
+{
+  "id": "placeholder",
+  "slug": "interieurdesignerweb",
+  "name": "Interieurdesignerweb",
+  "domain": "interieurdesignerweb.nl",
+  "url": "https://interieurdesignerweb.nl",
+  "locale": "nl-NL",
+  "themeTokens": {
+    "primary": "#000000",
+    "primaryDark": "#313131",
+    "accent": "#69c5d3",
+    "background": "#ffffff",
+    "text": "#3e3e3e",
+    "muted": "#7b7873",
+    "fontHeading": "Montserrat",
+    "fontBody": "Lato",
+    "radius": "10px"
+  },
+  "siteTitle": "Interieurdesignerweb.nl",
+  "siteDescription": "Wil je je huis goed inrichten? Wij helpen je met de beste producten en handige tips om dit te kunnen doen!",
+  "titleSuffix": " | Interieurdesignerweb.nl",
+  "robots": "index,follow",
+  "socialLinks": [],
+  "navMenus": [],
+  "syncedAt": "2026-07-28T00:00:00.000Z"
+}

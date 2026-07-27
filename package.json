@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "verify:links": "python3 scripts/verify-links.py"
+    "verify:links": "python3 scripts/verify-links.py",
+    "sync:content": "node scripts/sync-content.mjs"
   },
   "dependencies": {
     "astro": "^7.0.3"
