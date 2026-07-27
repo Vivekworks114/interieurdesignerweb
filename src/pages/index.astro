@@ -100,7 +100,13 @@ const latestReviews = recentReviews.slice(0, 10);
         {featuredArticles.map((post, i) => (
           <a class="theme-card reveal" style={`--i:${i}`} href={`/${post.data.slug || post.id}/`}>
             <div class="theme-card__media">
-              <img src={post.data.image} alt="" width="800" height="533" loading="lazy" />
+              <img
+                src={post.data.image ?? '/wp-content/uploads/2023/02/image-2.jpg'}
+                alt=""
+                width="800"
+                height="533"
+                loading="lazy"
+              />
             </div>
             <h3>{post.data.title}</h3>
             <span class="theme-card__cta">Lees verder</span>

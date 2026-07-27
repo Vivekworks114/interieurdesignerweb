@@ -2,10 +2,14 @@
 interface Props {
   title: string;
   href: string;
-  image: string;
+  image?: string;
 }
 
-const { title, href, image } = Astro.props;
+const {
+  title,
+  href,
+  image = '/wp-content/uploads/2023/02/image-2.jpg',
+} = Astro.props;
 ---
 <article class="blog-card reveal">
   <a href={href} class="blog-card__link">

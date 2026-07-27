@@ -26,7 +26,13 @@ const posts = ordered.slice(pageSize);
         {posts.map((post) => (
           <a class="theme-card reveal" href={`/${post.data.slug || post.id}/`}>
             <div class="theme-card__media">
-              <img src={post.data.image} alt="" width="800" height="533" loading="lazy" />
+              <img
+                src={post.data.image ?? '/wp-content/uploads/2023/02/image-2.jpg'}
+                alt=""
+                width="800"
+                height="533"
+                loading="lazy"
+              />
             </div>
             <h2>{post.data.title}</h2>
             <span class="theme-card__meta">
