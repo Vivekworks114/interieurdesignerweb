@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import BlogListing from '../../components/BlogListing.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+
+export const BLOG_PAGE_SIZE = 12;
+const posts = (await getCollection('blog'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const totalPages = Math.ceil(posts.length / BLOG_PAGE_SIZE);
+
+export async function getStaticPaths() {
+  const allPosts = (await getCollection('blog')).filter((post) => !post.data.draft);
+  const pageCount = Math.ceil(allPosts.length / BLOG_PAGE_SIZE);
+  return Array.from({ length: Math.max(0, pageCount - 1) }, (_, index) => ({
+    params: { page: String(index + 2) },
+  }));
+}
+
+const page = Number(Astro.params.page);
+const pagePosts = posts.slice((page - 1) * BLOG_PAGE_SIZE, page * BLOG_PAGE_SIZE);
+---
+<SiteLayout title={`Blog – pagina ${page} | Interieurdesignerweb.nl`} description="Praktische ideeën, trends en inspiratie voor je interieur." canonicalPath={`/blog/${page}/`}>
+  <BlogListing posts={pagePosts} currentPage={page} totalPages={totalPages} />
+</SiteLayout>

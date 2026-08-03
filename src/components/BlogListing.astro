@@ -1,0 +1,93 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+  currentPage: number;
+  totalPages: number;
+}
+
+const { posts, currentPage, totalPages } = Astro.props;
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+const pageHref = (page: number) => (page === 1 ? '/blog/' : `/blog/${page}/`);
+---
+<section class="blog-listing page-section">
+  <div class="home-wrap">
+    <header class="blog-listing__hero reveal">
+      <p class="page-hero__label">Interieur & inspiratie</p>
+      <h1>Blog</h1>
+      <p>Praktische ideeën, trends en inspiratie voor een interieur dat bij je past.</p>
+    </header>
+
+    <div class="blog-listing__grid" aria-label="Blogartikelen">
+      {posts.map((post) => {
+        const slug = post.data.slug || post.id;
+        return (
+          <article class="blog-card reveal">
+            <a class="blog-card__image" href={`/${slug}/`} aria-label={`Lees ${post.data.title}`}>
+              {post.data.image ? (
+                <img src={post.data.image} alt="" width="800" height="500" loading="lazy" />
+              ) : (
+                <span class="blog-card__placeholder" aria-hidden="true">
+                  <span>Interieurdesignerweb</span>
+                </span>
+              )}
+            </a>
+            <div class="blog-card__body">
+              <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+              <h2><a href={`/${slug}/`}>{post.data.title}</a></h2>
+              <p>{post.data.description}</p>
+              <a class="blog-card__cta" href={`/${slug}/`}>Lees verder <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    {totalPages > 1 && (
+      <nav class="blog-pagination" aria-label="Paginering">
+        {currentPage > 1 && <a href={pageHref(currentPage - 1)}>← Vorige</a>}
+        <div class="blog-pagination__pages">
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) =>
+            page === currentPage ? (
+              <span aria-current="page">{page}</span>
+            ) : (
+              <a href={pageHref(page)} aria-label={`Pagina ${page}`}>{page}</a>
+            )
+          )}
+        </div>
+        {currentPage < totalPages && <a href={pageHref(currentPage + 1)}>Volgende →</a>}
+      </nav>
+    )}
+  </div>
+</section>
+
+<style>
+  .blog-listing__hero { max-width: 44rem; margin: 0 auto clamp(2.25rem, 5vw, 3.5rem); padding: clamp(2.75rem, 7vw, 5rem) 0 0; text-align: center; }
+  .blog-listing__hero h1 { margin: 0 0 .8rem; font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4.25rem); letter-spacing: -.055em; line-height: 1; }
+  .blog-listing__hero p:last-child { margin: 0 auto; color: var(--home-ink-soft); }
+  .blog-listing__grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+  .blog-card { display: grid; grid-template-rows: auto 1fr; overflow: hidden; min-height: 100%; border: 1px solid var(--home-line); background: rgba(251,252,251,.78); box-shadow: 0 8px 20px rgba(16,22,18,.05); transition: transform .3s var(--home-ease), box-shadow .3s var(--home-ease), border-color .3s var(--home-ease); }
+  .blog-card:hover { transform: translateY(-5px); border-color: rgba(36,92,69,.36); box-shadow: 0 16px 32px rgba(16,22,18,.11); }
+  .blog-card__image { display: block; aspect-ratio: 16 / 10; overflow: hidden; background: var(--home-mist-2); }
+  .blog-card__image img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--home-ease); }
+  .blog-card:hover .blog-card__image img { transform: scale(1.045); }
+  .blog-card__placeholder { display: grid; width: 100%; height: 100%; place-items: end start; padding: 1.25rem; background: linear-gradient(135deg, var(--home-moss-deep), var(--home-moss) 58%, #6e927e); color: rgba(251,252,251,.88); font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; letter-spacing: -.03em; }
+  .blog-card__body { display: flex; flex-direction: column; align-items: flex-start; padding: 1.35rem; }
+  .blog-card time { color: var(--home-moss); font-size: .82rem; font-weight: 650; }
+  .blog-card h2 { margin: .55rem 0 .7rem; font-family: var(--font-display); font-size: clamp(1.25rem, 2vw, 1.5rem); letter-spacing: -.035em; line-height: 1.18; }
+  .blog-card h2 a:hover { color: var(--home-moss); }
+  .blog-card p { display: -webkit-box; margin: 0 0 1.15rem; overflow: hidden; color: var(--home-ink-soft); font-size: .95rem; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+  .blog-card__cta { margin-top: auto; color: var(--home-moss); font-size: .92rem; font-weight: 700; }
+  .blog-card__cta span { display: inline-block; transition: transform .2s var(--home-ease); }
+  .blog-card:hover .blog-card__cta span { transform: translateX(3px); }
+  .blog-pagination { display: flex; align-items: center; justify-content: center; gap: .75rem; margin-top: clamp(2.5rem, 6vw, 4rem); font-size: .9rem; font-weight: 650; }
+  .blog-pagination > a, .blog-pagination__pages a, .blog-pagination__pages span { display: inline-flex; min-width: 2.55rem; min-height: 2.55rem; align-items: center; justify-content: center; padding: .45rem .75rem; border: 1px solid var(--home-line); background: rgba(251,252,251,.85); transition: color .2s var(--home-ease), border-color .2s var(--home-ease), background .2s var(--home-ease); }
+  .blog-pagination > a:hover, .blog-pagination__pages a:hover { border-color: var(--home-moss); color: var(--home-moss-deep); }
+  .blog-pagination__pages { display: flex; gap: .4rem; }
+  .blog-pagination__pages span { border-color: var(--home-moss); background: var(--home-moss); color: var(--home-white); }
+  @media (min-width: 680px) { .blog-listing__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; } }
+  @media (min-width: 1024px) { .blog-listing__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.65rem; } }
+  @media (max-width: 480px) { .blog-pagination { gap: .4rem; } .blog-pagination > a { min-width: auto; padding-inline: .55rem; } }
+</style>

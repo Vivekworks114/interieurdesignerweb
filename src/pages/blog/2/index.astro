@@ -1,8 +1,0 @@
----
-import ElementorPageLayout from '../../../layouts/ElementorPageLayout.astro';
-import pageData from '../../../data/blog/page-2.json';
-import blogHtml from '../../../data/elementor/blog/page-2.html?raw';
----
-<ElementorPageLayout {...pageData} canonicalPath={pageData.path}>
-  <Fragment set:html={blogHtml} />
-</ElementorPageLayout>

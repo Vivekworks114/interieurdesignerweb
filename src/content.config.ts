@@ -9,8 +9,7 @@ const blog = defineCollection({
     description: z.string(),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
-    // CMS posts may omit image; keep WP-style path used by existing posts
-    image: z.string().optional().default('/wp-content/uploads/2023/02/image-2.jpg'),
+    image: z.string().optional(),
     slug: z.string(),
     draft: z.boolean().default(false),
   }),

@@ -1,23 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
-import CmsBlogCards from '../../components/CmsBlogCards.astro';
-import ElementorPageLayout from '../../layouts/ElementorPageLayout.astro';
-import { migratedBlogSlugs } from '../../lib/blog';
-import pageData from '../../data/blog/page-1.json';
-import blogHtml from '../../data/elementor/blog/page-1.html?raw';
+import BlogListing from '../../components/BlogListing.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
 
-const cmsPosts = (await getCollection('blog'))
-  .filter((post) => !post.data.draft && !migratedBlogSlugs.has(post.data.slug || post.id))
+export const BLOG_PAGE_SIZE = 12;
+const posts = (await getCollection('blog'))
+  .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-// Keep the extracted Elementor page intact, inserting CMS-only cards before its grid closes.
-const gridCloseIndex = blogHtml.indexOf('</div>\n<nav aria-label="Paginering"');
-if (gridCloseIndex === -1) throw new Error('Could not find the Elementor blog grid boundary.');
-const gridBeforeCards = blogHtml.slice(0, gridCloseIndex);
-const gridAfterCards = blogHtml.slice(gridCloseIndex);
+const totalPages = Math.max(1, Math.ceil(posts.length / BLOG_PAGE_SIZE));
 ---
-<ElementorPageLayout {...pageData} canonicalPath={pageData.path}>
-  <Fragment set:html={gridBeforeCards} />
-  <CmsBlogCards posts={cmsPosts} />
-  <Fragment set:html={gridAfterCards} />
-</ElementorPageLayout>
+<SiteLayout title="Blog | Interieurdesignerweb.nl" description="Praktische ideeën, trends en inspiratie voor je interieur." canonicalPath="/blog/">
+  <BlogListing posts={posts.slice(0, BLOG_PAGE_SIZE)} currentPage={1} totalPages={totalPages} />
+</SiteLayout>
