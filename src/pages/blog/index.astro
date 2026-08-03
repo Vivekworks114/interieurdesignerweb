@@ -1,60 +1,23 @@
 ---
 import { getCollection } from 'astro:content';
-import SiteLayout from '../../layouts/SiteLayout.astro';
+import CmsBlogCards from '../../components/CmsBlogCards.astro';
+import ElementorPageLayout from '../../layouts/ElementorPageLayout.astro';
+import { migratedBlogSlugs } from '../../lib/blog';
+import pageData from '../../data/blog/page-1.json';
+import blogHtml from '../../data/elementor/blog/page-1.html?raw';
 
-const title = 'Blog | Interieurdesignerweb.nl';
-const description =
-  'Handige tips en informatie voor je interieur. Bekijk onze nieuwste artikelen over woninginrichting, meubels en interieurproducten.';
-
-const ordered = (await getCollection('blog'))
-  .filter((post) => !post.data.draft)
+const cmsPosts = (await getCollection('blog'))
+  .filter((post) => !post.data.draft && !migratedBlogSlugs.has(post.data.slug || post.id))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const pageSize = 30;
-const posts = ordered.slice(0, pageSize);
-const totalPages = Math.ceil(ordered.length / pageSize);
+// Keep the extracted Elementor page intact, inserting CMS-only cards before its grid closes.
+const gridCloseIndex = blogHtml.indexOf('</div>\n<nav aria-label="Paginering"');
+if (gridCloseIndex === -1) throw new Error('Could not find the Elementor blog grid boundary.');
+const gridBeforeCards = blogHtml.slice(0, gridCloseIndex);
+const gridAfterCards = blogHtml.slice(gridCloseIndex);
 ---
-<SiteLayout title={title} description={description} canonicalPath="/blog/">
-  <div class="home-wrap">
-    <header class="page-hero reveal">
-      <p class="page-hero__label">Blog</p>
-      <h1>Laatste artikelen</h1>
-      <p>Inspiratie, tips en productkeuzes voor een interieur dat bij jou past.</p>
-    </header>
-
-    <section class="page-section">
-      <div class="card-grid card-grid--3">
-        {posts.map((post) => (
-          <a class="theme-card reveal" href={`/${post.data.slug || post.id}/`}>
-            <div class="theme-card__media">
-              <img
-                src={post.data.image ?? '/wp-content/uploads/2023/02/image-2.jpg'}
-                alt=""
-                width="800"
-                height="533"
-                loading="lazy"
-              />
-            </div>
-            <h2>{post.data.title}</h2>
-            <span class="theme-card__meta">
-              {post.data.pubDate.toLocaleDateString('nl-NL', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </span>
-            <span class="theme-card__cta">Lees verder →</span>
-          </a>
-        ))}
-      </div>
-
-      {totalPages > 1 && (
-        <nav class="pager reveal" aria-label="Paginering">
-          <span class="is-current">1</span>
-          <a href="/blog/2/">2</a>
-          <a href="/blog/2/">Volgende →</a>
-        </nav>
-      )}
-    </section>
-  </div>
-</SiteLayout>
+<ElementorPageLayout {...pageData} canonicalPath={pageData.path}>
+  <Fragment set:html={gridBeforeCards} />
+  <CmsBlogCards posts={cmsPosts} />
+  <Fragment set:html={gridAfterCards} />
+</ElementorPageLayout>

@@ -1,0 +1,42 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+---
+{posts.map((post) => {
+  const slug = post.data.slug || post.id;
+  const href = `/${slug}/`;
+  const date = post.data.pubDate.toLocaleDateString('nl-NL', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  return (
+    <article class="elementor-post elementor-grid-item post type-post status-publish format-standard has-post-thumbnail hentry category-blog" role="listitem">
+      <a class="elementor-post__thumbnail__link" href={href} tabindex="-1">
+        <div class="elementor-post__thumbnail">
+          <img src={post.data.image} alt="" loading="lazy" />
+        </div>
+      </a>
+      <div class="elementor-post__text">
+        <h2 class="elementor-post__title">
+          <a href={href}>{post.data.title}</a>
+        </h2>
+        <div class="elementor-post__meta-data">
+          <span class="elementor-post-date">{date}</span>
+        </div>
+        <div class="elementor-post__excerpt">
+          <p>{post.data.description}</p>
+        </div>
+        <a aria-label={`Lees meer over ${post.data.title}`} class="elementor-post__read-more" href={href} tabindex="-1">
+          Lees meer »
+        </a>
+      </div>
+    </article>
+  );
+})}
