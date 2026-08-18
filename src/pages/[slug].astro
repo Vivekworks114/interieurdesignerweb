@@ -8,7 +8,7 @@ import { getProductGuide } from '../data/productGuides';
 import { getPostMedia, resolveMediaUrl } from '../lib/media';
 
 export async function getStaticPaths() {
-  const allPosts = (await getCollection('blog')).filter((post) => !post.data.draft);
+  const allPosts = (await getCollection('blog')).filter((post) => post.data.draft !== true);
 
   const blogPaths = allPosts.map((post) => ({
     params: { slug: post.data.slug || post.id },
@@ -72,7 +72,7 @@ const blogPost = props.type === 'blog' ? props.post : null;
 const rendered = blogPost ? await render(blogPost) : null;
 const Content = rendered?.Content;
 
-const allPosts = (await getCollection('blog')).filter((post) => !post.data.draft);
+const allPosts = (await getCollection('blog')).filter((post) => post.data.draft !== true);
 const relatedPosts = blogPost
   ? allPosts
       .filter((p) => (p.data.slug || p.id) !== (blogPost.data.slug || blogPost.id))
@@ -83,7 +83,7 @@ const relatedPosts = blogPost
 const productGuide =
   props.type === 'product' && props.data ? getProductGuide(props.data.slug) : undefined;
 
-const blogMedia = blogPost ? getPostMedia(blogPost.data) : null;
+const blogMedia = blogPost ? getPostMedia(blogPost.data, blogPost.data.slug || blogPost.id) : null;
 ---
 {props.type === 'blog' && blogPost && Content && (
   <SiteLayout
@@ -123,7 +123,7 @@ const blogMedia = blogPost ? getPostMedia(blogPost.data) : null;
           <h2>Meer artikelen</h2>
           <div class="card-grid card-grid--3">
             {relatedPosts.map((post) => {
-              const media = getPostMedia(post.data);
+              const media = getPostMedia(post.data, post.data.slug || post.id);
               return (
               <a class="theme-card" href={`/${post.data.slug || post.id}/`}>
                 <div class="theme-card__media">

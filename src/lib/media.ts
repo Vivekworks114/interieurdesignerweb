@@ -1,11 +1,13 @@
 import {
   FALLBACK_IMAGE,
   resolveMediaUrl,
+  uniqueStockCover,
 } from './media-url.mjs';
 
 export {
   FALLBACK_IMAGE,
   resolveMediaUrl,
+  uniqueStockCover,
   wpUploadsPath,
   looksLikeImageUrl,
   isWpUploadsPath,
@@ -13,7 +15,9 @@ export {
 
 type MediaObject = {
   url?: string | null;
+  src?: string | null;
   filename?: string | null;
+  prefix?: string | null;
   alt?: string | null;
   sizes?: Record<string, { url?: string | null } | undefined>;
 };
@@ -23,16 +27,26 @@ export type MediaInput = string | number | MediaObject | null | undefined;
 export const SITE_ORIGIN = 'https://interieurdesignerweb.nl';
 
 export function extractMediaUrl(input: MediaInput): string {
-  if (!input) return '';
+  if (input == null || input === '') return '';
   if (typeof input === 'number') return '';
-  if (typeof input === 'string') return input.trim();
+  if (typeof input === 'string') {
+    const t = input.trim();
+    if (!t || /^\d+$/.test(t) || t === '[object Object]') return '';
+    return t;
+  }
 
   const fromSizes =
     input.sizes?.large?.url ||
     input.sizes?.medium?.url ||
     input.sizes?.thumbnail?.url ||
     '';
-  return String(input.url || fromSizes || input.filename || '').trim();
+  const filename = String(input.filename || '').trim();
+  const prefix = String(input.prefix || '').trim().replace(/^\/+|\/+$/g, '');
+  const fromPrefix =
+    filename && prefix
+      ? `https://pub-d4024ad3e57841448e0ee58a19abe46b.r2.dev/${prefix}/${filename.split('/').pop()}`
+      : '';
+  return String(input.url || input.src || fromSizes || fromPrefix || filename || '').trim();
 }
 
 export function extractMediaAlt(input: MediaInput, fallback = ''): string {
@@ -67,13 +81,15 @@ export function absoluteUrl(src: string, site = SITE_ORIGIN): string {
 export function getPostMedia(
   data: {
     title?: string;
+    slug?: string;
     pubDate?: Date;
     image?: MediaInput;
     featuredImage?: MediaInput;
+    heroImage?: MediaInput;
     imageAlt?: string;
     featuredImageAlt?: string;
   },
-  fallback = FALLBACK_IMAGE,
+  slug = data.slug || '',
 ): { src: string; alt: string } {
   const alt =
     data.imageAlt?.trim() ||
@@ -83,7 +99,11 @@ export function getPostMedia(
     data.title ||
     'Blogafbeelding';
 
-  const raw = extractMediaUrl(data.featuredImage) || extractMediaUrl(data.image);
-  const src = resolveMediaUrl(raw, fallback, data.pubDate);
+  const raw =
+    extractMediaUrl(data.featuredImage) ||
+    extractMediaUrl(data.heroImage) ||
+    extractMediaUrl(data.image);
+  const resolved = resolveMediaUrl(raw, '', data.pubDate);
+  const src = resolved || uniqueStockCover(slug || data.title || 'post');
   return { src, alt };
 }

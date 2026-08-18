@@ -1,11 +1,25 @@
 /**
- * Image URLs must stay site-relative like Takenweb on Cloudflare Workers:
- *   /wp-content/uploads/2024/10/klantkompas-software-uitleg-300x185.png
- * After deploy that becomes:
- *   https://<worker>.workers.dev/wp-content/uploads/2024/10/...
+ * Resolve WP uploads and Payload CMS Media (R2).
+ * Bare R2 keys 404; they must be rewritten to /tenants/interieurdesignerweb/{file}.
+ * Do not rewrite working R2 URLs into invented /wp-content/uploads/YYYY/MM/ paths.
  */
 
+export const TENANT_SLUG = 'interieurdesignerweb';
+export const R2_PUBLIC = 'https://pub-d4024ad3e57841448e0ee58a19abe46b.r2.dev';
 export const FALLBACK_IMAGE = '/wp-content/uploads/2024/03/pexels-skitterphoto-9312-scaled.jpg';
+
+const UNIQUE_STOCK = [
+  '/wp-content/uploads/2025/12/pexels-pixabay-271639.jpg',
+  '/wp-content/uploads/2025/12/pexels-castorlystock-3609956.jpg',
+  '/wp-content/uploads/2025/12/pexels-christa-grover-977018-1910472-6.jpg',
+  '/wp-content/uploads/2025/11/Laminaatvloer.jpg',
+  '/wp-content/uploads/2025/10/pexels-itsterrymag-2635038-3.jpg',
+  '/wp-content/uploads/2025/07/window-2628519_1280.jpg',
+  '/wp-content/uploads/2023/02/image-2.jpg',
+  '/wp-content/uploads/2024/05/stolmeijer-vijfhuizen-01-web-1536x864.webp',
+];
+
+const IMAGE_EXT = /\.(avif|gif|jpe?g|png|svg|webp|bmp|tiff?)($|\?)/i;
 
 function isHttp(value) {
   return /^https?:\/\//i.test(value);
@@ -66,36 +80,74 @@ export function isCmsMediaPath(pathname) {
   );
 }
 
+export function isLocalBlogCoverPath(src) {
+  return /^\/?images\/blog\/cover-/i.test(String(src || '').trim());
+}
+
+export function isR2Host(hostname = '') {
+  const host = hostname.toLowerCase();
+  return host.endsWith('.r2.dev') || host.includes('r2.cloudflarestorage.com');
+}
+
+/** https://xxx.r2.dev/file.jpg → https://xxx.r2.dev/tenants/interieurdesignerweb/file.jpg */
+export function repairTenantR2Url(url, tenantSlug = TENANT_SLUG) {
+  const trimmed = String(url || '').trim();
+  if (!trimmed || !tenantSlug || !isHttp(trimmed)) return trimmed;
+  if (trimmed.includes(`/tenants/${tenantSlug}/`)) return trimmed;
+
+  try {
+    const parsed = new URL(trimmed);
+    if (!isR2Host(parsed.hostname)) return trimmed;
+    const path = parsed.pathname.replace(/^\/+/, '');
+    if (!path || path.includes('/')) return trimmed;
+    parsed.pathname = `/tenants/${tenantSlug}/${path}`;
+    return parsed.toString();
+  } catch {
+    return trimmed;
+  }
+}
+
+function hashSlug(slug) {
+  let h = 0;
+  for (const ch of String(slug || '')) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return h;
+}
+
+export function uniqueStockCover(slug) {
+  return UNIQUE_STOCK[hashSlug(slug) % UNIQUE_STOCK.length];
+}
+
 export function looksLikeImageUrl(value) {
   if (!value) return false;
-  if (/\.(avif|gif|jpe?g|png|svg|webp|bmp|tiff?)($|\?)/i.test(value)) return true;
+  if (IMAGE_EXT.test(value)) return true;
   if (isCmsMediaPath(value) || isLocalAssetPath(value)) return true;
-  if (isHttp(value) && /\/(media|uploads|files|images|wp-content)\//i.test(value)) return true;
+  if (isHttp(value) && /\/(media|uploads|files|images|wp-content|tenants)\//i.test(value)) return true;
+  if (isHttp(value) && /\.r2\.dev\//i.test(value)) return true;
   return false;
 }
 
 /**
- * Always return a same-origin path. Never leave a CMS or localhost host
- * in the HTML, so Workers deploy URLs match Takenweb.
+ * Return a usable img src: local WP path, local asset, or repaired R2 URL.
  */
-export function resolveMediaUrl(input, fallback = FALLBACK_IMAGE, date) {
+export function resolveMediaUrl(input, fallback = '', date) {
   let src = typeof input === 'string' ? input.trim() : '';
   if (!src) return fallback;
   src = src.replace(/\\/g, '/');
   if (src.startsWith('//')) src = `https:${src}`;
 
   if (isHttp(src)) {
+    const repaired = repairTenantR2Url(src);
     try {
-      const url = new URL(src);
+      const url = new URL(repaired);
+      if (isR2Host(url.hostname)) return repaired;
       if (isWpUploadsPath(url.pathname) || isLocalAssetPath(url.pathname)) {
-        return url.pathname;
+        return url.pathname.split('?')[0];
       }
       if (isCmsMediaPath(url.pathname)) {
-        return wpUploadsPath(filenameFromPath(url.pathname), date);
+        const file = filenameFromPath(url.pathname);
+        return `${R2_PUBLIC}/tenants/${TENANT_SLUG}/${file}`;
       }
-      if (looksLikeImageUrl(src)) {
-        return wpUploadsPath(filenameFromPath(url.pathname), date);
-      }
+      if (IMAGE_EXT.test(url.pathname)) return repaired;
       return fallback;
     } catch {
       return fallback;
@@ -103,16 +155,20 @@ export function resolveMediaUrl(input, fallback = FALLBACK_IMAGE, date) {
   }
 
   const path = src.startsWith('/') ? src : `/${src}`;
+  if (isLocalBlogCoverPath(path)) return fallback;
   if (isLocalAssetPath(path)) return path.split('?')[0];
-  if (isCmsMediaPath(path)) return wpUploadsPath(filenameFromPath(path), date);
-  if (looksLikeImageUrl(path)) return wpUploadsPath(filenameFromPath(path), date);
+  if (isCmsMediaPath(path)) {
+    const file = filenameFromPath(path);
+    return `${R2_PUBLIC}/tenants/${TENANT_SLUG}/${file}`;
+  }
+  if (looksLikeImageUrl(path)) return path.split('?')[0];
   return fallback;
 }
 
 export function fetchSourceUrl(input, date) {
   const src = typeof input === 'string' ? input.trim() : '';
   if (!src) return '';
-  if (isHttp(src)) return src;
+  if (isHttp(src)) return repairTenantR2Url(src);
   const path = src.startsWith('/') ? src : `/${src}`;
   const origin = cmsOrigin();
   if (isCmsMediaPath(path) && origin) return `${origin}${path}`;

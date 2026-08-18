@@ -5,12 +5,12 @@ import SiteLayout from '../../layouts/SiteLayout.astro';
 
 export const BLOG_PAGE_SIZE = 12;
 const posts = (await getCollection('blog'))
-  .filter((post) => !post.data.draft)
+  .filter((post) => post.data.draft !== true)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const totalPages = Math.ceil(posts.length / BLOG_PAGE_SIZE);
 
 export async function getStaticPaths() {
-  const allPosts = (await getCollection('blog')).filter((post) => !post.data.draft);
+  const allPosts = (await getCollection('blog')).filter((post) => post.data.draft !== true);
   const pageCount = Math.ceil(allPosts.length / BLOG_PAGE_SIZE);
   return Array.from({ length: Math.max(0, pageCount - 1) }, (_, index) => ({
     params: { page: String(index + 2) },

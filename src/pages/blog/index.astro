@@ -5,7 +5,7 @@ import SiteLayout from '../../layouts/SiteLayout.astro';
 
 export const BLOG_PAGE_SIZE = 12;
 const posts = (await getCollection('blog'))
-  .filter((post) => !post.data.draft)
+  .filter((post) => post.data.draft !== true)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const totalPages = Math.max(1, Math.ceil(posts.length / BLOG_PAGE_SIZE));
 ---

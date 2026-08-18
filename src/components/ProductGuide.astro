@@ -295,7 +295,7 @@ const latestArticles = (await getCollection('blog'))
           </div>
           <div class="card-grid card-grid--3">
             {latestArticles.map((post) => {
-              const media = getPostMedia(post.data);
+              const media = getPostMedia(post.data, post.data.slug || post.id);
               return (
               <a class="theme-card" href={`/${post.data.slug || post.id}/`}>
                 <div class="theme-card__media">

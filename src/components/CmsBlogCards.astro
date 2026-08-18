@@ -11,7 +11,7 @@ const { posts } = Astro.props;
 {posts.map((post) => {
   const slug = post.data.slug || post.id;
   const href = `/${slug}/`;
-  const media = getPostMedia(post.data);
+  const media = getPostMedia(post.data, slug);
   const date = post.data.pubDate.toLocaleDateString('nl-NL', {
     year: 'numeric',
     month: 'long',

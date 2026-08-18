@@ -24,7 +24,7 @@ const pageHref = (page: number) => (page === 1 ? '/blog/' : `/blog/${page}/`);
     <div class="blog-listing__grid" aria-label="Blogartikelen">
       {posts.map((post) => {
         const slug = post.data.slug || post.id;
-        const media = getPostMedia(post.data);
+        const media = getPostMedia(post.data, slug);
         return (
           <article class="blog-card reveal">
             <a class="blog-card__image" href={`/${slug}/`} aria-label={`Lees ${post.data.title}`}>

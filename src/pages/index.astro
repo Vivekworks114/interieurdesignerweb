@@ -10,7 +10,7 @@ const description =
   'Wil je je huis goed inrichten? Wij helpen je met de beste producten en handige tips om dit te kunnen doen!';
 
 const featuredArticles = (await getCollection('blog'))
-  .filter((post) => !post.data.draft)
+  .filter((post) => post.data.draft !== true)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 4);
 const spotlightProducts = popularProducts.slice(0, 8);
@@ -99,7 +99,7 @@ const latestReviews = recentReviews.slice(0, 10);
       </div>
       <div class="card-grid card-grid--3" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
         {featuredArticles.map((post, i) => {
-          const media = getPostMedia(post.data);
+          const media = getPostMedia(post.data, post.data.slug || post.id);
           return (
           <a class="theme-card reveal" style={`--i:${i}`} href={`/${post.data.slug || post.id}/`}>
             <div class="theme-card__media">
