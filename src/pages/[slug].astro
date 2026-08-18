@@ -5,6 +5,7 @@ import ProductGuide from '../components/ProductGuide.astro';
 import products from '../data/products.json';
 import { getCategoryBySlug, getCategoryItems } from '../data/categories';
 import { getProductGuide } from '../data/productGuides';
+import { getPostMedia, resolveMediaUrl } from '../lib/media';
 
 export async function getStaticPaths() {
   const allPosts = (await getCollection('blog')).filter((post) => !post.data.draft);
@@ -81,13 +82,15 @@ const relatedPosts = blogPost
 
 const productGuide =
   props.type === 'product' && props.data ? getProductGuide(props.data.slug) : undefined;
+
+const blogMedia = blogPost ? getPostMedia(blogPost.data) : null;
 ---
 {props.type === 'blog' && blogPost && Content && (
   <SiteLayout
     title={blogPost.data.title}
     description={blogPost.data.description}
     canonicalPath={`/${blogPost.data.slug || blogPost.id}/`}
-    ogImage={blogPost.data.image}
+    ogImage={blogMedia?.src}
     ogType="article"
   >
     <div class="home-wrap page-section">
@@ -103,10 +106,10 @@ const productGuide =
             })}
           </p>
         </header>
-        {blogPost.data.image && (
+        {blogMedia && (
           <img
-            src={blogPost.data.image}
-            alt=""
+            src={blogMedia.src}
+            alt={blogMedia.alt}
             width="1200"
             height="675"
             class="article-hero-img"
@@ -119,12 +122,14 @@ const productGuide =
         <aside class="related reveal">
           <h2>Meer artikelen</h2>
           <div class="card-grid card-grid--3">
-            {relatedPosts.map((post) => (
+            {relatedPosts.map((post) => {
+              const media = getPostMedia(post.data);
+              return (
               <a class="theme-card" href={`/${post.data.slug || post.id}/`}>
                 <div class="theme-card__media">
                   <img
-                    src={post.data.image ?? '/wp-content/uploads/2023/02/image-2.jpg'}
-                    alt=""
+                    src={media.src}
+                    alt={media.alt}
                     width="800"
                     height="533"
                     loading="lazy"
@@ -133,7 +138,8 @@ const productGuide =
                 <h3>{post.data.title}</h3>
                 <span class="theme-card__cta">Lees verder →</span>
               </a>
-            ))}
+              );
+            })}
           </div>
         </aside>
       )}
@@ -146,7 +152,7 @@ const productGuide =
     title={`${productGuide.title} | Vind ze hier`}
     description={productGuide.description}
     canonicalPath={`/${productGuide.slug}/`}
-    ogImage={productGuide.ogImage}
+    ogImage={resolveMediaUrl(productGuide.ogImage)}
     ogType="article"
   >
     <div class="home-wrap">
@@ -160,7 +166,7 @@ const productGuide =
     title={decodeEntities(props.data.title)}
     description={`${decodeEntities(props.data.title)} — vergelijk en vind de beste optie op Interieurdesignerweb.nl`}
     canonicalPath={`/${props.data.slug}/`}
-    ogImage={props.data.image}
+    ogImage={resolveMediaUrl(props.data.image)}
   >
     <div class="home-wrap page-section">
       <header class="page-hero reveal">
@@ -173,7 +179,7 @@ const productGuide =
 
       <div class="product-layout reveal">
         <div class="product-layout__media">
-          <img src={props.data.image} alt="" width="800" height="533" />
+          <img src={resolveMediaUrl(props.data.image)} alt={decodeEntities(props.data.title)} width="800" height="533" />
         </div>
         <div class="theme-content">
           <p>

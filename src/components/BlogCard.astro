@@ -1,20 +1,24 @@
 ---
+import { resolveMediaUrl } from '../lib/media';
+
 interface Props {
   title: string;
   href: string;
   image?: string;
+  imageAlt?: string;
 }
 
 const {
   title,
   href,
-  image = '/wp-content/uploads/2023/02/image-2.jpg',
+  image = '/wp-content/uploads/2024/03/pexels-skitterphoto-9312-scaled.jpg',
+  imageAlt = title,
 } = Astro.props;
 ---
 <article class="blog-card reveal">
   <a href={href} class="blog-card__link">
     <div class="blog-card__image">
-      <img src={image} alt={title} width="400" height="267" loading="lazy" />
+      <img src={resolveMediaUrl(image)} alt={imageAlt} width="400" height="267" loading="lazy" />
     </div>
     <h2 class="blog-card__title">{title}</h2>
   </a>

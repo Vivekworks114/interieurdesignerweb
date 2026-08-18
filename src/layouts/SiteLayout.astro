@@ -1,6 +1,7 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import { absoluteUrl, resolveMediaUrl } from '../lib/media';
 import '../styles/theme.css';
 
 interface Props {
@@ -19,12 +20,13 @@ const {
   ogType = 'website',
 } = Astro.props;
 
-const siteUrl = 'https://interieurdesignerweb.nl';
+const siteUrl = Astro.site?.origin || 'https://interieurdesignerweb.nl';
 const canonical =
   canonicalPath === '/'
     ? `${siteUrl}/`
     : `${siteUrl}${canonicalPath.endsWith('/') ? canonicalPath : `${canonicalPath}/`}`;
-const absoluteOg = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+const resolvedOg = resolveMediaUrl(ogImage);
+const absoluteOg = absoluteUrl(resolvedOg, siteUrl);
 const currentPath = Astro.url.pathname;
 ---
 <!doctype html>

@@ -2,6 +2,7 @@
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import ProductGuide from '../../components/ProductGuide.astro';
 import { getProductGuide } from '../../data/productGuides';
+import { resolveMediaUrl } from '../../lib/media';
 
 const guide = getProductGuide('beste-donzen-dekbed');
 
@@ -13,7 +14,7 @@ if (!guide) {
   title={`${guide.title} | Vind ze hier`}
   description={guide.description}
   canonicalPath="/beste-donzen-dekbed/"
-  ogImage={guide.ogImage}
+    ogImage={resolveMediaUrl(guide.ogImage)}
   ogType="article"
 >
   <div class="home-wrap">

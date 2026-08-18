@@ -6,5 +6,5 @@
   ],
   "blogContentPath": "src/content/blog",
   "blogFileExtension": "md",
-  "notes": "Blog content is synced from Payload on publish (CI). Do not edit src/content/blog in git for ongoing editorial work."
+  "notes": "Blog content is synced from Payload on publish (CI). Featured images are stored as /wp-content/uploads/YYYY/MM/filename so they resolve on Cloudflare Workers as https://<worker>.workers.dev/wp-content/uploads/YYYY/MM/filename. Payload uploads are copied into public/wp-content/uploads at build time."
 }

@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import type { ProductGuide } from '../data/productGuides';
 import { mainNavigation } from '../data/navigation';
+import { getPostMedia, resolveMediaUrl } from '../lib/media';
 
 interface Props {
   guide: ProductGuide;
@@ -182,8 +183,8 @@ const latestArticles = (await getCollection('blog'))
               </span>
               {product.image ? (
                 <img
-                  src={product.image}
-                  alt=""
+                  src={resolveMediaUrl(product.image)}
+                  alt={product.name}
                   width="640"
                   height="640"
                   loading={index < 2 ? 'eager' : 'lazy'}
@@ -248,7 +249,7 @@ const latestArticles = (await getCollection('blog'))
       <aside class="guide-author reveal">
         <div class="guide-author__media">
           {author.image ? (
-            <img src={author.image} alt="" width="96" height="96" loading="lazy" />
+            <img src={resolveMediaUrl(author.image)} alt={`Portret van ${author.name}`} width="96" height="96" loading="lazy" />
           ) : (
             <div class="guide-author__initials" aria-hidden="true">
               {author.name
@@ -293,12 +294,14 @@ const latestArticles = (await getCollection('blog'))
             <h2>Laatste artikelen</h2>
           </div>
           <div class="card-grid card-grid--3">
-            {latestArticles.map((post) => (
+            {latestArticles.map((post) => {
+              const media = getPostMedia(post.data);
+              return (
               <a class="theme-card" href={`/${post.data.slug || post.id}/`}>
                 <div class="theme-card__media">
                   <img
-                    src={post.data.image ?? '/wp-content/uploads/2023/02/image-2.jpg'}
-                    alt=""
+                    src={media.src}
+                    alt={media.alt}
                     width="800"
                     height="533"
                     loading="lazy"
@@ -307,7 +310,8 @@ const latestArticles = (await getCollection('blog'))
                 <h3>{post.data.title}</h3>
                 <span class="theme-card__cta">Lees verder →</span>
               </a>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}

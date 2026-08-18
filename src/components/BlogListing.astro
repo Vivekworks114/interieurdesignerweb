@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { getPostMedia } from '../lib/media';
 
 interface Props {
   posts: CollectionEntry<'blog'>[];
@@ -23,16 +24,11 @@ const pageHref = (page: number) => (page === 1 ? '/blog/' : `/blog/${page}/`);
     <div class="blog-listing__grid" aria-label="Blogartikelen">
       {posts.map((post) => {
         const slug = post.data.slug || post.id;
+        const media = getPostMedia(post.data);
         return (
           <article class="blog-card reveal">
             <a class="blog-card__image" href={`/${slug}/`} aria-label={`Lees ${post.data.title}`}>
-              {post.data.image ? (
-                <img src={post.data.image} alt="" width="800" height="500" loading="lazy" />
-              ) : (
-                <span class="blog-card__placeholder" aria-hidden="true">
-                  <span>Interieurdesignerweb</span>
-                </span>
-              )}
+              <img src={media.src} alt={media.alt} width="800" height="500" loading="lazy" />
             </a>
             <div class="blog-card__body">
               <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>

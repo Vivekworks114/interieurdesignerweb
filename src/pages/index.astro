@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import { categoryPages } from '../data/categories';
 import { popularProducts, recentReviews } from '../data/homepage';
+import { getPostMedia } from '../lib/media';
 
 const title = 'Een mooi interieur voor je huis | Interieurdesignerweb.nl';
 const description =
@@ -17,10 +18,10 @@ const latestReviews = recentReviews.slice(0, 10);
 ---
 <SiteLayout title={title} description={description} canonicalPath="/">
   <section class="hero" aria-label="Introductie">
-    <div class="hero__media" aria-hidden="true">
+    <div class="hero__media">
       <img
         src="/wp-content/uploads/2024/05/stolmeijer-vijfhuizen-01-web-1536x864.webp"
-        alt=""
+        alt="Sfeervolle woonkeuken als introductie tot Interieurdesignerweb"
         width="1536"
         height="864"
         fetchpriority="high"
@@ -97,12 +98,14 @@ const latestReviews = recentReviews.slice(0, 10);
         <p>Inspiratie en praktische tips voor een interieur dat werkt — en mooi oogt.</p>
       </div>
       <div class="card-grid card-grid--3" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
-        {featuredArticles.map((post, i) => (
+        {featuredArticles.map((post, i) => {
+          const media = getPostMedia(post.data);
+          return (
           <a class="theme-card reveal" style={`--i:${i}`} href={`/${post.data.slug || post.id}/`}>
             <div class="theme-card__media">
               <img
-                src={post.data.image ?? '/wp-content/uploads/2023/02/image-2.jpg'}
-                alt=""
+                src={media.src}
+                alt={media.alt}
                 width="800"
                 height="533"
                 loading="lazy"
@@ -111,7 +114,8 @@ const latestReviews = recentReviews.slice(0, 10);
             <h3>{post.data.title}</h3>
             <span class="theme-card__cta">Lees verder</span>
           </a>
-        ))}
+          );
+        })}
       </div>
       <p class="section__more reveal">
         <a href="/blog/">Alle artikelen bekijken →</a>
